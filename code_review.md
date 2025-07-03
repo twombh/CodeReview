@@ -1,5 +1,7 @@
 # Code Review
-## al
+## al.base
+### 역할
+앱의 공통 동작을 캡슐화하고 일관된 구조룰 제공하기 위한 기반 클래스
 ### Code
 #### base.ALBaseActivity
 - 안드로이드 앱에서 사용하는 추상 클래스
@@ -88,10 +90,63 @@
 
 |함수|매개변수|범위/종속|내용|특징|
 |:-----:|:---:|:---:|:---:|:---:|
-|callToRemote|Bundle|override|바텀시트에 사용할 커스텀 테마 지정|-|
-
+|callToRemote|다수|protected|서버 API 호출을 실행하고, 결과에 따라 onSuccess, onError, onFailed, ALUiState 등으로 UI에 상태를 전달하는 메서드|single<T>로 서버 api 호출|
+|callToLocal|다수|protected|값이 없는 비동기 작업 성공만 콜백으로 전달|-|
+|onCleared|-|override|등록된 모든 Rx 구독 해제하여 메모리 누수 방지|-|
+|ALUiState|-|sealed|UI에 전달할 수 있는 다양한 상태들을 타입 안전하게 표현|sealed class를 써서 패턴 매칭에 유리|
+|ALUiState.Alert|message, isFinish|-|문자열 메시지로 알림 다이얼로그 표시|data class|
+|ALUiState.AlertWithResource|@StringRes message|-|문자열 리소스를 기반으로 알림|data class|
+|ALUiState.Toast|@StringRes message|-|리소스 기반 토스트 메시지|data class|
+|ALUiState.Loading|isShow|-|로딩 시작/종료|data class|
+|ALUiState.DuplicateLogin|-|-|중복 로그인 발생 시|data class|
 
 ##### 역할
-|함수|매개변수|범위/종속|내용|특징|
-|:-----:|:---:|:---:|:---:|:---:|
-|onCreate|Bundle|override|바텀시트에 사용할 커스텀 테마 지정|-|
+- 모든 ViewModel에서 서버 API 호출을 쉽게 하도록 도와주는 공통 비동기 처리 도우미 클래스
+- UI에 로딩/에러/토스트 같은 상태 이벤트를 안전하게 전달하는 중간 관리자
+
+
+## al.data
+
+### 역할
+각각 서버와 직접 통신하는 역할을 하는 클래스
+
+### Code
+#### data.datasource.ALBusInfoDataSource
+##### 역할
+- 기초 코드 정보 조회
+- lstDate를 기준으로 서버에서 공통 코드 데이터를 가져옴
+
+#### data.datasource.ALBookmarkDataSource
+##### 역할
+- 즐겨찾는 노선 조회, 저장, 삭제 요청을 각각 담당
+- ViewModel/Repo는 요청 객체만 넘기면 됨
+
+#### data.datasource.AlCommonDataSource
+##### 역할
+- 프로모션 배너, 팝업, 결제 수단, 약관, 카드 BIN 정보 등
+- 앱 내에서 공통으로 재사용되는 정보들을 조회
+
+#### data.datasource.ALReservationDataSource
+##### 역할
+- 예약 생성, 결제 요청, 환불 요청, 사유 기반 환불 등
+- 티켓/여정 예약 전후 단계의 API
+
+#### data.datasource.ALTicketDataSource
+##### 역할
+- 발권/예약 내역 조회
+- 예약 리스트, 상세 정보, 동기화 정보, 사용 이력 등을 서버로부터 가져옴
+
+#### data.datasource.ALTravelDataSource
+##### 역할
+- 여행 상품 관련 정보 조회
+- 여행 리스트, 요금 규칙 (출발 전/후/할인) 서버에서 조회
+
+#### data.entities.request.ALBaseCodeInfoRequest
+##### 역할
+- 기초 코드 정보 조회 API 호출 시 요청 파라미터 전달
+- 마지막 업데이트 시간을 서버에 전달하여 변경된 코드 정보만 요청할 수 있도록 함
+
+#### data.entities.request.ALBookmarkDeleteRequest
+##### 역할
+- 즐겨찾기 삭제 API 호출 시 필요한 출발지/도착지 공항 코드를 서버에 전달
+- 삭제 대상이 되는 즐겨찾기 노선을 식별하기 위해 사용됨
