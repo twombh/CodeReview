@@ -1,4 +1,4 @@
-# Code Review
+# Code Review (AL)
 ## al.base
 ### 역할
 앱의 공통 동작을 캡슐화하고 일관된 구조룰 제공하기 위한 기반 클래스
@@ -149,4 +149,118 @@
 #### data.entities.request.ALBookmarkDeleteRequest
 ##### 역할
 - 즐겨찾기 삭제 API 호출 시 필요한 출발지/도착지 공항 코드를 서버에 전달
-- 삭제 대상이 되는 즐겨찾기 노선을 식별하기 위해 사용됨
+- 삭제 대상이 되는 즐겨찾기 노선을 식별하기 위해 사용
+
+#### data.entities.request.ALBookmarkSaveRequest
+##### 역할
+- 즐겨찾기 노선 저장 API 호출 시 필요한 요청 데이터 전달
+- 출발지/도착지 공항 코드, 고정 핀 여부, 별명 정보를 서버에 전달하여 즐겨찾기 노선을 등록
+
+#### data.entities.reuqest.ALCardInfoRequest
+##### 역할
+- 카드 BIN 정보를 기반으로 카드사 정보를 조회할 때 사용되는 요청 모델
+- 사용자가 입력한 카드 번호 앞 6자리를 cardBin으로 서버에 전달함
+
+#### data.entities.request.ALFareDiscountRuleRequest
+##### 역할
+- 항공 운임에 적용 가능한 신분 할인 규칙 조회를 위한 요청 모델
+- 여정별 운임 정보(IdFareInfo) 리스트를 서버에 전달하여 각 여정에 대한 할인 가능 여부와 금액을 계산
+- 편도는 1개, 왕복/다구간은 2개 이상의 IdFareInfo 포함
+
+##### 내부 필드 역할
+|필드명|설명|
+|:-----:|:---:|
+|carrierCode|운항 항공사 코드|
+|deptAirport/arrAirport|출발/도착 공항 코드|
+|departureDate/arrivalDate|출발/도착 일시|
+|flightNumber|편명|
+|cabinClass|좌석 클래스|
+|bookingClass|운임 클래스|
+|airFare|일반 항공 운임|
+|aireFareChild|아동 항공 운임|
+|airTax|성인 공항세|
+|airTaxChild|아동 공항세|
+|airline|예약 항공사 코드|
+|journeykey|여정 키 값|
+|fakrekey|운임 키 값|
+
+#### data.entities.request.ALPaymentMethodRequest
+##### 역할
+- 결제 수단 목록 조회 API 호출 시 사용하는 요청
+- utlzSvcDvsCd 필드로 서비스 구분 코드를 서비스를 전달하며 해당 서비스에 맞는 결재 수단을 필터링 함
+
+#### data.entities.request.ALPaymentRequest
+##### 역할
+- 항공권 결제 요청 시 필요한 여정, 탑승객, 카드, 운임 정보 등을 서버에 전달하기 위한 요청
+- 성인/아동 운임, 프로모션 할인 금액, 카드정보, 결제 수단, 이지페이 정보 등 결제에 필요한 모든 데이터를 포함
+
+|필드명|설명|
+|:-----:|:---:|
+|orderKey|주문번호|
+|journeys(CardInfo)|각 여정별 결제 수단|
+|pnrInfos|여정 예약 정보|
+|passengerInfos|탑승객 정보|
+|totalAirFare, totalFare|운임 총액 (세금 포함 여부에 따라 구분)|
+|totalPromotionDiscountAmount 외|다양한 할인 금액 합계|
+|CardInfo|카드 결제 수단 및 관련 정보, 결제 금액 등|
+|FreeBaggage|여정별 무료 수하물 서비스 정보|
+|EasyPayInfo|이지페이 결제에 필요한 인증값 (대한항공 등에서 사용됨)|
+
+#### data.entities.request.ALPostFareRuleRequest
+##### 역할
+- 결제 이후 적용되는 운임 규칙을 조회할 떄 사용
+- orderKey와 detailOrderId를 서버에 전달하여 해당 예약 건에 대한 후속 운임 규칙을 확인
+
+#### data.enitities.request.ALPreFareRuleRequest
+##### 역할
+- 항공권 예약 이전 단계에서 운임 규칙을 조회할 때 사용하는 요청 모델
+- 여정 키, 운임 키, PAIR 키, 항공사 코드, 출발/도착 공항, 출발일자 등 여정의 식별 정보를 기반으로 서버에 운임 규칙을 요청함
+- 선택적으로 프로모션 ID도 함께 전달
+
+#### data.entities.request.ALPromotionBannerRequest
+##### 역할
+- 프로모션 배너 조회 API 호출 시 사용되는 요청 모델
+- 배너의 서비스 구분 코드(advrSvcDvsCd)와 노출 위치 코드(advrLocDvsCd)를 서버에 전달하여
+- 특정 위치에 맞는 배너 리스트를 조회
+
+#### data.entities.request.ALPromotionPopupRequest
+##### 역할
+- 프로모션 팝업 조회 API 호출 시 사용되는 요청
+- 팝업의 서비스 구분 코드(advrSvcDvsCd)와 노출 위치 코드(advrLocDvsCd)를 서버에 전달하여
+특정 화면에 띄울 팝업 광고 정보를 조회
+
+#### data.entities.request.ALReservationCancelByReasonRequest
+##### 역할
+- 예약 취소 사유를 포함한 환불 요청을 서버에 전달할 때 사용하는 요청
+- 예약 코드(orderKey)와 함께 취소 사유 코드(qqCode)와 여정 및 탑승객 정보(cancelInfos)를 포함하여
+부분 취소 또는 특정 사유 기반 환불 요청을 처리
+
+#### data.entities.request.ALReservationCancelRequest
+##### 역할
+- 항공 예약 건에 대해 전체 또는 부분 취소 요청을 서버에 전달할 때 사용
+- 예약 코드와 여정 정보 및 탑승객별 운임/개인 정보를 포함한 상세 취소 요청 데이터를 서버에 전달
+
+#### data.entities.request.ALReservationCompleteDetailRequest
+##### 역할
+- 예약 완료 후 특정 여정에 대한 상세 정보를 조회할 때 사용
+- 여정 식별을 위한 일련번호(jrnySno)를 서버에 전달
+
+#### data.entities.request.ALReservationRequest
+##### 역할
+- 항공 예약 요청 시 서버에 전달되는 전체 예약 정보 모델
+- 여정(Journey), 예약자(Contact), 탑승객(PassengerInfo) 정보를 포함하여 예약 API 호출 시 사용
+
+#### data.entities.request.ALRollingBannerRequest
+##### 역할
+- 슬라이드 배너 정보를 조회할 때 사용
+- 서비스 구분 코드(advrSvcDvsCd)와 노출 위치 코드(advrLocDvsCd)를 서버에 전달하여 홈 화면 등 특정 위치에 띄울 롤링 배너 정보를 서버에서 가져올 때 사용
+
+#### data.entities.request.ALSelectTicketHisListRequest
+##### 역할
+- 탑승 완료된 티켓 내역을 조회할 때 서버에 전달하는 요청 모델
+- 사용자가 자신의 탑승 이력을 페이징 처리하여 조회할 수 있도록 pageNo 값을 전달하여 요청
+
+#### data.entities.request.ALTermsListRequest
+##### 역할
+- 연간서비스 코드
+- 약관 코드
