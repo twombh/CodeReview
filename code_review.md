@@ -264,3 +264,1029 @@
 ##### 역할
 - 연간서비스 코드
 - 약관 코드
+
+## al.data.enums
+
+### 역할
+앱에서 사용되는 상수값들을 타입 안전하게 관리하기 위한 enum 클래스들
+
+### Code
+
+#### data.enums.ALAirportSelectType
+- 공항 선택 단계를 구분하는 enum 클래스
+- 편도/왕복/다구간 여행에서 출발지/도착지 선택 시 현재 선택 단계를 식별하기 위해 사용
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|code|val|정수형 식별 코드|각 선택 타입별 고유 번호|
+
+|enum 값|code|설명|
+|:-----:|:---:|:---:|
+|FIRST_DEPARTURE|1|첫 번째 여정 출발지|
+|FIRST_ARRIVAL|2|첫 번째 여정 도착지|
+|SECOND_DEPARTURE|3|두 번째 여정 출발지|
+|SECOND_ARRIVAL|4|두 번째 여정 도착지|
+
+##### 역할
+- 다구간/왕복 여행에서 공항 선택 순서 관리
+- UI에서 현재 선택해야 할 공항이 출발지인지 도착지인지 구분
+- 첫 번째/두 번째 여정 구분을 통한 복수 여정 처리
+
+#### data.enums.ALDeepLinkType
+- 앱 딥링크 진입점을 구분하는 enum 클래스
+- 외부에서 앱으로 진입할 때 어느 화면으로 이동할지 결정하기 위해 사용
+
+##### 변수 및 함수
+|enum 값|설명|
+|:-----:|:---:|
+|MAIN|메인 화면으로 이동|
+|RESERVATION_DETAIL|예약 상세 화면으로 이동|
+
+##### 역할
+- 딥링크를 통한 특정 화면 직접 접근 관리
+- 외부 링크나 푸시 알림을 통한 앱 진입점 제어
+- 사용자 경험 향상을 위한 직접 화면 이동
+
+#### data.enums.ALJourneyType & ALMultiWayType
+- 항공 여행의 여정 타입을 구분하는 enum 클래스들
+- 편도, 왕복, 다구간 여행을 식별하고 다구간에서는 순서를 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|code|val|정수형 식별 코드|각 여정 타입별 고유 번호|
+
+|enum 값 (ALJourneyType)|code|설명|
+|:-----:|:---:|:---:|
+|ROUND_TRIP|1|왕복 여행|
+|ONE_WAY|2|편도 여행|
+|MULTI_WAY|3|다구간 여행|
+
+|enum 값 (ALMultiWayType)|code|설명|
+|:-----:|:---:|:---:|
+|FIRST|1|첫 번째 구간|
+|SECOND|2|두 번째 구간|
+|NONE|2|해당 없음|
+
+##### 역할
+- 항공권 검색 시 여정 타입 구분
+- 다구간 여행에서 각 구간별 순서 관리
+- 요금 계산 및 검색 조건 설정에 활용
+
+#### data.enums.ALPaymentMethod
+- 결제 수단을 구분하는 enum 클래스
+- 항공권 결제 시 사용할 결제 방식을 식별하기 위해 사용
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|code|val|정수형 식별 코드|각 결제 방식별 고유 번호|
+
+|enum 값|code|설명|
+|:-----:|:---:|:---:|
+|EASY_PAY|1|간편결제|
+|GENERAL_PAY|2|일반결제|
+|NONE|3|결제 방식 미선택|
+
+##### 역할
+- 결제 플로우에서 결제 방식 구분
+- UI에서 결제 옵션 표시 및 선택 상태 관리
+- 결제 API 호출 시 결제 타입 전달
+
+#### data.enums.ALPassengerType
+- 탑승객 타입을 구분하는 enum 클래스
+- 성인, 아동, 유아를 식별하여 요금 계산 및 좌석 배정에 활용
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|code|val|정수형 식별 코드|각 탑승객 타입별 고유 번호|
+
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|getPaxType|-|public|IATA 표준 탑승객 코드 반환|ADT/CHD/INF 문자열|
+|getName|-|public|탑승객 타입 한글명 반환|ALGlobalData에서 조회|
+
+|enum 값|code|getPaxType()|설명|
+|:-----:|:---:|:---:|:---:|
+|ADULT|1|ADT|성인 탑승객|
+|CHILD|2|CHD|아동 탑승객|
+|INFANT|3|INF|유아 탑승객|
+
+##### 역할
+- 항공 요금 계산 시 탑승객별 차등 적용
+- IATA 표준 코드 변환을 통한 항공사 API 연동
+- 탑승객 정보 관리 및 좌석 할당 규칙 적용
+
+#### data.enums.ALSeatType
+- 항공기 좌석 등급을 구분하는 enum 클래스
+- 이코노미/비즈니스 클래스 구분과 화면 표시명, 항공사 코드를 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|code|val|정수형 식별 코드|각 좌석 등급별 고유 번호|
+|displayName|val|화면 표시용 좌석명|다국어 리소스에서 가져온 문자열|
+|seatName|val|항공사 표준 좌석 코드|Y(이코노미), C(비즈니스)|
+
+|enum 값|code|displayName|seatName|설명|
+|:-----:|:---:|:---:|:---:|:---:|
+|ECONOMY|1|이코노미석|Y|일반석|
+|BUSINESS|2|비즈니스석|C|비즈니스석|
+
+##### 역할
+- 항공권 검색 시 좌석 등급 필터링
+- 요금 조회 및 예약 시 좌석 클래스 구분
+- UI에서 좌석 등급 표시 및 선택 옵션 제공
+
+#### data.enums.ALTextStyle
+- 텍스트 스타일을 구분하는 enum 클래스
+- 앱 내 텍스트 표시 시 일관된 폰트 스타일 적용을 위해 사용
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|style|val|안드로이드 스타일 리소스 ID|R.style 참조|
+
+|enum 값|style|설명|
+|:-----:|:---:|:---:|
+|REGULAR|R.style.ALRegularText|일반 폰트 굵기|
+|MEDIUM|R.style.ALMediumText|중간 폰트 굵기|
+|BOLD|R.style.ALBoldText|굵은 폰트|
+
+##### 역할
+- UI 텍스트의 일관된 스타일 관리
+- 디자인 시스템 기반 텍스트 스타일 적용
+- 커스텀 뷰나 컴포넌트에서 동적 스타일 설정
+
+## al.data.model.appmodel
+
+### 역할
+앱 내부에서 사용되는 핵심 데이터 모델들을 정의하는 클래스들
+
+### Code
+
+#### data.model.appmodel.ALAppAirportInfo
+- 공항 정보를 담는 데이터 클래스
+- 항공권 검색 및 예약 시 출발지/도착지 공항 정보를 관리하기 위해 사용
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|airport|val|공항 코드|nullable String|
+|airportArea|val|공항 지역명|nullable String|
+
+##### 역할
+- 공항 선택 화면에서 공항 정보 표시
+- 여정 정보에서 출발지/도착지 공항 데이터 저장
+- 검색 조건 및 예약 정보에 공항 코드 제공
+
+#### data.model.appmodel.ALAppEasyPayRequestInfo
+- 간편결제 요청 시 필요한 정보를 담는 데이터 클래스
+- 대한항공 등 특정 항공사의 간편결제 연동 시 사용되는 여정별 결제 정보 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|isFirstJourneyKoreanAir|val|첫 번째 여정 대한항공 여부|nullable Boolean|
+|firstOrderId|val|첫 번째 여정 주문 ID|nullable String|
+|firstArrivalAirportCode|val|첫 번째 여정 도착 공항 코드|nullable String|
+|firstCardAmount|val|첫 번째 여정 결제 금액|발권 대행료 제외, nullable String|
+|isSecondJourneyKoreanAir|val|두 번째 여정 대한항공 여부|nullable Boolean|
+|secondOrderId|val|두 번째 여정 주문 ID|nullable String|
+|secondArrivalAirportCode|val|두 번째 여정 도착 공항 코드|nullable String|
+|secondCardAmount|val|두 번째 여정 결제 금액|발권 대행료 제외, nullable String|
+
+##### 역할
+- 다구간/왕복 여행에서 여정별 간편결제 정보 관리
+- 대한항공 전용 간편결제 시스템 연동
+- 여정별 결제 금액 및 주문 정보 분리 처리
+
+#### data.model.appmodel.ALAppFareInfo
+- 항공 운임 정보를 담는 데이터 클래스
+- 탑승객별 요금 세부 내역을 관리하며 결제 화면에서 요금 표시에 사용
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|airFare|var|항공 운임료|Int|
+|airTax|var|항공세|Int|
+|fuelCharge|var|유류세|Int|
+|tkFee|var|수수료|Int|
+|totalFare|var|합계 금액|Int|
+|isFirstIndex|var|첫 번째 인덱스 여부|Boolean|
+|isFirstJourney|var|첫 번째 여정 여부|Boolean|
+|name|var|탑승객 이름|String|
+|passengerType|var|탑승객 구분|ALPassengerType enum|
+
+##### 역할
+- 탑승객별 요금 세부 내역 계산 및 표시
+- 여정별 요금 정보 구분 관리
+- 결제 화면에서 요금 구성 요소별 금액 표시
+
+#### data.model.appmodel.ALAppJourneyInfo
+- 여정 정보를 담는 핵심 데이터 클래스
+- 항공권 검색부터 예약까지 전체 여정 정보를 관리하며 유효성 검증 로직 포함
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|journeyType|var|여정 타입|ALJourneyType enum, 기본값 왕복|
+|departureDate|var|출발일|Calendar?, nullable|
+|arrivalDate|var|도착일/복귀일|Calendar?, nullable|
+|firstDepartureAirport|var|첫 번째 출발지 공항|ALAppAirportInfo?, nullable|
+|firstArrivalAirport|var|첫 번째 도착지 공항|ALAppAirportInfo?, nullable|
+|secondDepartureAirport|var|두 번째 출발지 공항|ALAppAirportInfo?, 다구간용|
+|secondArrivalAirport|var|두 번째 도착지 공항|ALAppAirportInfo?, 다구간용|
+|passengerInfo|var|승객 정보|ALAppPassengerInfo?, nullable|
+
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|isEnable|-|public|여정 정보 유효성 검증|여정 타입별 필수 조건 확인|
+
+##### 역할
+- 전체 여정 정보의 중앙 집중 관리
+- 편도/왕복/다구간 여행 타입별 유효성 검증
+- 항공권 검색 API 호출 시 필요한 모든 조건 제공
+- 사용자 입력 완성도 체크 및 다음 단계 진행 가능 여부 판단
+
+#### data.model.appmodel.ALAppPassengerInfo
+- 탑승객 정보를 담는 데이터 클래스
+- 성인/아동/유아 탑승객 수와 좌석 등급을 관리하며 탑승객 수 조절 기능 제공
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|adultCount|var|성인 탑승객 수|Int, 기본값 1|
+|childCount|var|아동 탑승객 수|Int, 기본값 0|
+|infantCount|var|유아 탑승객 수|Int, 기본값 0|
+|seatType|var|좌석 등급|ALSeatType enum, 기본값 이코노미|
+
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|setNumberMinus|ALPassengerType|public|특정 타입 탑승객 수 감소|체이닝 가능|
+|setNumberPlus|ALPassengerType|public|특정 타입 탑승객 수 증가|체이닝 가능|
+|totalNumber|-|public|전체 탑승객 수 반환|Int 반환|
+
+##### 역할
+- 항공권 검색 시 탑승객 조건 설정
+- 탑승객 선택 UI에서 인원 수 증감 처리
+- 요금 계산 시 탑승객 타입별 인원 수 제공
+- 좌석 등급 선택 및 관리
+
+#### data.model.appmodel.ALAppTravelFilter
+- 항공편 검색 결과 필터링을 위한 조건들을 담는 데이터 클래스
+- 사용자가 설정한 출발시간, 운임가격, 항공사 필터 조건을 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|departureDateRange|var|출발시간 범위|Pair<String, String>?, HHMM 형식|
+|freightPrice|var|운임가격 범위|Pair<Int, Int>?, 최소-최대 금액|
+|airlineList|val|선택된 항공사 목록|ArrayList<ALBaseCodeInfoModel.Code>|
+
+##### 역할
+- 항공편 검색 결과 화면에서 필터 조건 적용
+- 사용자 맞춤 항공편 검색 결과 제공
+- 출발시간대, 가격대, 선호 항공사별 결과 필터링
+- 검색 결과 최적화를 통한 사용자 경험 향상
+
+
+
+## al.data.model
+
+### 역할
+서버 응답 데이터를 앱 내부에서 사용하는 모델로 변환하고 관리하는 클래스들
+
+### Code
+
+#### data.model.ALBaseModel
+- 모든 응답 모델의 기반이 되는 기본 클래스
+- 서버 응답의 공통 에러 처리 및 성공/실패 판단 로직을 제공
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|errorCode|var|에러 코드|"0000" 정상, 이외 에러|
+|errorMessage|var|에러 메시지|에러 발생 시 사용|
+|duplicateLogin|var|중복 로그인 여부|Boolean, 기본값 false|
+
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|isSuccess|-|public|정상 응답 여부 확인|errorCode가 "0000"인지 검사|
+|isDuplicateLogin|-|public|중복 로그인 여부 확인|duplicateLogin 값 반환|
+
+##### 역할
+- 모든 API 응답 모델의 공통 기반 제공
+- 에러 코드 기반 성공/실패 판단 표준화
+- 중복 로그인 감지 및 처리
+- 일관된 에러 처리 패턴 제공
+
+#### data.model.ALBaseCodeInfoModel
+- 서버에서 제공하는 기초 코드 정보와 공항 정보를 관리하는 모델
+- 앱 전체에서 사용되는 공통 코드와 공항 데이터를 구조화하여 제공
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|codeList|val|공통 코드 목록|List<Code>, 기본값 빈 리스트|
+|airportList|val|공항 정보 목록|List<Airport>, 기본값 빈 리스트|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|Code|공통 코드 정보 (코드그룹, 코드, 코드명, 정렬순서, 사용여부, 체크여부, 부가속성1~9)|
+|Airport|공항 정보 (공항명, 공항코드, 공항지역)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALBaseCodeInfoModel로 변환|정렬 및 매핑 처리|
+
+##### 역할
+- 서버 기초 코드 데이터의 구조화된 관리
+- 공항 정보 및 공통 코드의 앱 내 표준 형식 제공
+- 서버 응답의 snake_case를 camelCase로 변환
+- 코드 사용 여부 및 정렬 순서 관리
+
+#### data.model.ALBookmarkDeleteModel
+- 즐겨찾기 삭제 API 응답을 처리하는 모델
+- 삭제 요청의 성공/실패 여부만 확인하는 단순 응답 모델
+
+##### 변수 및 함수
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALBookmarkDeleteModel로 변환|에러 정보만 설정|
+
+##### 역할
+- 즐겨찾기 삭제 요청의 결과 처리
+- 기본 에러 처리 로직만 제공
+- 삭제 성공/실패 여부 확인
+
+#### data.model.ALBookmarkListModel
+- 즐겨찾기 목록 조회 API 응답을 처리하는 모델
+- 사용자가 저장한 즐겨찾기 노선 목록을 ALBookmarkEntity로 변환하여 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|bookmarkList|val|즐겨찾기 목록|List<ALBookmarkEntity>, 기본값 빈 리스트|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALBookmarkListModel로 변환|서버 응답을 ALBookmarkEntity로 매핑|
+
+##### 역할
+- 사용자 즐겨찾기 노선 목록 관리
+- 서버 응답 데이터를 Room Entity 형태로 변환
+- 고정 핀 여부, 별명, 생성시간 등 메타 정보 포함
+- 로컬 DB 저장을 위한 데이터 구조 제공
+
+#### data.model.ALBookmarkSaveModel
+- 즐겨찾기 저장 API 응답을 처리하는 모델
+- 즐겨찾기 저장 시 서버에서 반환되는 생성시간 정보를 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|createTime|val|생성시간|Long, 기본값 0L|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALBookmarkSaveModel로 변환|생성시간 추출 및 에러 정보 설정|
+
+##### 역할
+- 즐겨찾기 저장 요청의 결과 처리
+- 서버에서 부여한 생성시간 정보 관리
+- 로컬 DB 동기화를 위한 타임스탬프 제공
+
+#### data.model.ALCardInfoModel
+- 카드 BIN 정보 조회 API 응답을 처리하는 모델
+- 사용자가 입력한 카드 번호 앞 6자리로 카드사 정보를 조회한 결과를 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|cardName|val|카드명|nullable String|
+|crpcNm|val|승인기관코드명|nullable String|
+|checkCardYn|val|체크카드 여부|nullable String|
+|cprtCardYn|val|법인카드 여부|nullable String|
+|issurCd|val|발급사 코드|nullable String|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALCardInfoModel로 변환|rstCode 200을 성공으로 변환|
+
+##### 역할
+- 결제 시 카드 정보 유효성 검증
+- 카드사별 결제 옵션 제공
+- 체크카드/법인카드 구분을 통한 결제 방식 결정
+- 카드 BIN 기반 자동 카드사 인식
+
+#### data.model.ALFareDiscountRuleModel
+- 신분 할인 규칙 조회 API 응답을 처리하는 모델
+- 여정별, 탑승객 타입별 신분 할인 정보를 구조화하여 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|firstFareDiscountRuleList|val|첫 번째 여정 할인 규칙|FirstFareRules?, nullable|
+|secondFareDiscountRuleList|val|두 번째 여정 할인 규칙|FirstFareRules?, nullable|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|FirstFareRules|성인/아동/유아별 할인 규칙 그룹|
+|FareDiscountRule|개별 할인 규칙 (승객구분, 할인명, 할인코드, 운임/세금 할인률)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALFareDiscountRuleModel로 변환|가는편/오는편 할인 규칙 분리 매핑|
+
+##### 역할
+- 탑승객 타입별 신분 할인 옵션 제공
+- 여정별 할인 규칙 분리 관리
+- 할인률 기반 요금 계산 지원
+- 예약 시 적용 가능한 할인 혜택 표시
+
+#### data.model.ALFareRuleModel
+- 운임 규칙 조회 API 응답을 처리하는 모델
+- 항공권 예약/취소 시 적용되는 운임 규정을 구조화하여 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|fareRuleList|val|운임 규칙 목록|List<FareRule>, 기본값 빈 리스트|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|FareRule|개별 운임 규칙 (규정명, 규정설명, 규정유형)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALFareRuleModel로 변환|정렬 순서 적용 후 매핑|
+
+##### 역할
+- 항공권 구매 전 운임 규정 안내
+- 취소/변경 규정 및 수수료 정보 제공
+- 규정 유형별 분류 (일반/취소/기타)
+- 사용자 동의 및 확인을 위한 규정 텍스트 관리
+
+## al.data.model
+
+### Code
+
+#### data.model.ALPaymentCardModel
+- 결제 카드 정보를 관리하는 모델
+- 기존 카드 정보(CardInfo)를 항공 결제용 카드 모델로 변환하여 보안 처리된 카드 데이터 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|cardList|val|결제 카드 목록|MutableList<PaymentCard>, 기본값 빈 리스트|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|PaymentCard|개별 카드 정보 (카드번호, 보안데이터, 유효기간, 카드명, 카드사 등)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|List<CardInfo>를 ALPaymentCardModel로 변환|plainString으로 카드번호 복호화|
+
+##### 역할
+- 기존 등록 카드를 항공 결제용으로 변환
+- 카드번호 보안 처리 및 분할 관리
+- 메인 카드 설정 및 카드 종류 구분
+- 결제 시 카드 선택 옵션 제공
+
+#### data.model.ALPaymentMethodModel
+- 결제 수단 정보를 관리하는 모델
+- 특정 서비스에서 사용 가능한 결제 방식과 프로모션 정보를 제공
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|promotionList|val|프로모션 목록|List<String>, 기본값 빈 리스트|
+|isShowEasyPay|val|간편결제 표시 여부|Boolean, 기본값 false|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALPaymentMethodModel로 변환|rstCode 200을 성공으로 처리|
+
+##### 역할
+- 서비스별 사용 가능한 결제 수단 필터링
+- 간편결제 노출 여부 제어
+- 결제 관련 프로모션 정보 제공
+- 결제 화면 UI 구성을 위한 옵션 관리
+
+#### data.model.ALPaymentModel
+- 결제 완료 후 응답 정보를 관리하는 모델
+- 여정별 결제 결과와 상세 주문 ID를 구조화하여 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|journeys|val|여정별 결제 정보|List<Journey>, 기본값 빈 리스트|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|Journey|개별 여정 결제 정보 (예약키, 상세주문ID 목록)|
+|DetailOrderId|상세 주문 정보 (주문ID)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALPaymentModel로 변환|여정별 결제 정보 매핑|
+
+##### 역할
+- 결제 완료 후 예약 번호 및 주문 정보 관리
+- 여정별 결제 결과 분리 저장
+- 예약 조회 및 관리를 위한 키 정보 제공
+- 후속 처리(발권, 취소 등)를 위한 참조 데이터
+
+#### data.model.ALPromotionBannerModel
+- 프로모션 배너 정보를 관리하는 모델
+- 특정 위치에 표시할 배너 이미지와 링크 정보를 제공
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|firstBanner|val|첫 번째 배너|ResponseInqrAdvrPupStupInf.Data.AdvrList?, nullable|
+|secondBanner|val|두 번째 배너|ResponseInqrAdvrPupStupInf.Data.AdvrList?, nullable|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALPromotionBannerModel로 변환|첫 번째/두 번째 배너 분리|
+
+##### 역할
+- 메인 화면 프로모션 배너 관리
+- 최대 2개 배너 동시 표시 지원
+- 배너 클릭 시 이동할 링크 정보 제공
+- 광고 노출 위치별 배너 컨텐츠 관리
+
+#### data.model.ALPromotionPopupModel
+- 프로모션 팝업 정보를 관리하는 모델
+- 앱 진입 시 표시할 팝업 광고나 공지사항을 구분하여 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|activeType|val|실행 성공 유형|String?, T(공지)/A(광고)/N(없음)|
+|promotionList|val|광고 목록|List<ResponseInqrAdvrPupStupInf.Data.AdvrList>, 기본값 빈 리스트|
+|notice|val|공지사항 정보|Notice?, nullable|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|Notice|공지사항 정보 (공지유형, 공지내용)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALPromotionPopupModel로 변환|타입별 컨텐츠 분리 처리|
+
+##### 역할
+- 앱 실행 시 팝업 표시 여부 결정
+- 광고와 공지사항 구분 관리
+- 우선순위 기반 컨텐츠 표시 (공지 > 광고)
+- 사용자 경험을 고려한 팝업 노출 제어
+
+#### data.model.ALReservationCancelByReasonModel
+- 사유 기반 예약 취소 요청 결과를 관리하는 모델
+- 특정 취소 사유를 포함한 환불 요청의 처리 결과를 구조화
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|cancelResult|val|취소 결과 목록|List<CancelInfo>, 기본값 빈 리스트|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|CancelInfo|취소 정보 (예약코드, 상세예약코드, 취소된 탑승객 정보)|
+|CanceledPassengerInfo|취소된 탑승객 정보 (탑승객ID, 탑승객구분)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALReservationCancelByReasonModel로 변환|취소 결과 상세 정보 매핑|
+
+##### 역할
+- 부분 취소 결과 관리
+- 탑승객별 취소 처리 상태 추적
+- 취소 사유 기반 환불 처리 결과 제공
+- 예약 관리 화면에서 취소 상태 표시
+
+#### data.model.ALReservationCancelModel
+- 일반 예약 취소 요청 결과를 관리하는 모델
+- 예약 전체 또는 부분 취소 후 처리 상태와 후속 액션 정보를 제공
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|orderKey|val|상위 예약 코드|nullable String|
+|detailOrderIdList|val|상세 예약 ID 목록|List<DetailOrderId>, 기본값 빈 리스트|
+|actionCode|val|액션 코드|빈값(일반취소), "QQ"(취소접수요청)|
+|journeySequenceNo|val|여정 일련번호|nullable String|
+|journeyStatusCode|val|여정 상태 코드|HL/OK/XX/QQ|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|DetailOrderId|상세 예약 ID 정보|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALReservationCancelModel로 변환|취소 처리 상태 및 액션 코드 매핑|
+
+##### 역할
+- 예약 취소 처리 결과 및 상태 관리
+- 취소 완료 vs 취소 요청 구분
+- 후속 화면 이동 로직 결정 (actionCode 기반)
+- 여정 상태별 사용자 안내 메시지 제공
+
+#### data.model.ALReservationCompleteDetailModel
+- 예약 완료 상세 정보를 관리하는 종합 모델
+- 탑승객, 운임, 일정, 결제 등 예약과 관련된 모든 세부 정보를 구조화
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|journeySequenceNo|val|여정 일련번호|nullable String|
+|journeyStatusCode|val|여정 상태 코드|HL/OK/XX/QQ|
+|pnrNumber|val|예약 번호|nullable String|
+|orderKey|val|주문 번호|nullable String|
+|passengerInfos|val|탑승객 정보 목록|List<PassengerInfo>, 기본값 빈 리스트|
+|airline ~ shareAirlineName|val|항공편 정보|항공사, 공항, 일시, 좌석 등|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|PassengerInfo|탑승객 상세 정보 (개인정보, 운임정보, 환불정보)|
+|FareInfo|운임 상세 정보 (운임료, 세금, 수수료, 상태)|
+|Refund|환불 정보|
+|Name|이름 정보 (성, 이름, 중간이름)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALReservationCompleteDetailModel로 변환|날짜 포맷 변환 및 복합 데이터 매핑|
+
+##### 역할
+- 예약 완료 후 상세 정보 통합 관리
+- 탑승객별 개별 정보 및 운임 내역 제공
+- 예약 상태별 화면 표시 제어
+- 취소/환불 시 참조 데이터 제공
+- 날짜/시간 데이터의 사용자 친화적 변환
+- Parcelable 지원으로 화면 간 데이터 전달 최적화
+
+
+#### data.model.ALReservationCompleteListModel
+- 예약 완료 목록 조회 API 응답을 처리하는 모델
+- 사용자의 예약 내역을 목록 형태로 간략하게 표시하기 위한 요약 정보 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|journeyList|val|여정 목록|List<Journey>, 기본값 빈 리스트|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|Journey|개별 여정 요약 정보 (일련번호, 상태, 항공사, 공항, 일시, 탑승객 수, 좌석등급)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALReservationCompleteListModel로 변환|여정별 요약 정보 매핑|
+
+##### 역할
+- 예약 내역 목록 화면에서 사용할 요약 정보 제공
+- 여정 상태별 목록 필터링 및 표시
+- 예약 상세 화면 진입을 위한 기본 정보 관리
+- 탑승객 수 및 좌석 등급 등 핵심 정보 요약 표시
+
+#### data.model.ALReservationModel
+- 예약 생성 API 응답을 처리하는 종합 모델
+- 예약 전체 정보를 상세하게 관리하며 여정, 탑승객, 운임 정보를 구조화
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|orderKey|val|주문번호|nullable String|
+|journeys|val|여정 정보 목록|List<Journey>, 기본값 빈 리스트|
+|passengerInfos|val|탑승객 정보 목록|List<PassengerInfo>, 기본값 빈 리스트|
+|totalAirFare ~ promotionYn|val|운임 관련 필드들|각종 할인 금액 및 프로모션 정보|
+|totalFareInfos|val|결제용 운임 정보|List<TotalFareInfo>?, nullable|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|Journey|여정 상세 정보 (항공사, 공항, 일시, 세그먼트, PNR 등)|
+|Segment|항공편 구간 정보 (예약등급, 좌석등급, 운행사, 비행시간 등)|
+|Leg|개별 비행편 정보 (운행사, 공항, 일시, 대기시간)|
+|PassengerInfo|탑승객 상세 정보 (개인정보, 운임정보, 환불정보)|
+|FareInfo|운임 상세 정보 (각종 요금, 할인, 프로모션)|
+|Refund|환불 정보|
+|Name|이름 정보 (성, 이름, 중간이름)|
+|TotalFareInfo|결제용 총 운임 정보|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALReservationModel로 변환|복합 구조의 상세 매핑|
+
+##### 역할
+- 예약 생성 후 전체 예약 정보의 통합 관리
+- 다구간/왕복 여행의 복잡한 세그먼트 구조 처리
+- 탑승객별 개별 운임 및 할인 정보 관리
+- 각종 프로모션 및 할인 금액의 세부 계산
+- 결제 시 필요한 운임 정보 제공
+- PNR, 여정 키 등 항공사 연동을 위한 참조 데이터 관리
+
+#### data.model.ALRollingBannerModel
+- 롤링 배너 조회 API 응답을 처리하는 모델
+- 메인 화면 상단에 표시할 슬라이드 배너 정보를 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|rollingBanners|val|롤링 배너 목록|List<ResponseInqrAdvrPupStupInf.Data.AdvrList>, 기본값 빈 리스트|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALRollingBannerModel로 변환|rstCode 200을 성공으로 처리|
+
+##### 역할
+- 메인 화면 롤링 배너 컨텐츠 관리
+- 여러 배너의 슬라이드 표시 지원
+- 배너 클릭 시 이동할 링크 정보 제공
+- 광고 캠페인 및 프로모션 배너 노출
+
+#### data.model.ALTermsListModel
+- 약관 목록 조회 API 응답을 처리하는 모델
+- 서비스 이용약관 및 개인정보처리방침 등의 약관 정보를 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|termsInfoList|val|약관 정보 목록|List<TermsInfo>, 기본값 빈 리스트|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|TermsInfo|개별 약관 정보 (외부URL, 일련번호, 제목)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALTermsListModel로 변환|첫 번째 약관 그룹의 상세 목록 추출|
+
+##### 역할
+- 앱 내 약관 및 정책 문서 목록 관리
+- 약관 제목 및 외부 링크 정보 제공
+- 약관 동의 화면에서 목록 표시
+- 웹뷰를 통한 약관 내용 연결
+
+#### data.model.ALTravelListModel
+- 항공편 검색 결과 API 응답을 처리하는 종합 모델
+- 가는편/오는편 항공편 목록과 상세 운임 정보를 구조화하여 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|firstTravelList|val|가는편 항공편 목록|List<Travel>, 기본값 빈 리스트|
+|secondTravelList|val|오는편 항공편 목록|List<Travel>, 기본값 빈 리스트|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|Travel|개별 항공편 정보 (항공사, 공항, 일시, 운임, 좌석, 프로모션 등)|
+|FreeBaggage|무료 수하물 서비스 정보 (서비스명, 코드, 값, 대상, 단위)|
+|PaxTypeFares|탑승객 타입별 운임 정보 (기본요금, 세금, 할인 등)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALTravelListModel로 변환|날짜 파싱 및 가는편/오는편 분리 매핑|
+
+##### 역할
+- 항공편 검색 결과의 통합 관리
+- 가는편/오는편 구분 및 조합 선택 지원
+- 탑승객 타입별 운임 정보 세부 제공
+- 무료 수하물 정보 및 부가 서비스 안내
+- 프로모션 및 할인 정보 적용
+- 항공편 선택을 위한 비교 정보 제공
+- 예약 진행을 위한 여정 키/운임 키 관리
+
+#### data.model.ALUsingListModel
+- 이용 내역 조회 API 응답을 처리하는 모델
+- 과거 탑승 완료된 항공편의 이용 기록을 관리
+
+##### 변수 및 함수
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|usingList|val|이용 내역 목록|List<UsingList>, 기본값 빈 리스트|
+
+|내부 클래스|설명|
+|:-----:|:---:|
+|UsingList|개별 이용 내역 (여정번호, 상태, 공항, 일시, 탑승객 수, 결제/취소일)|
+
+|확장함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|transform|-|global|ALBaseResponse를 ALUsingListModel로 변환|rstCode 200을 성공으로 처리|
+
+##### 역할
+- 사용자의 항공편 이용 이력 관리
+- 탑승 완료된 여정의 기록 보관
+- 이용 통계 및 마일리지 적립 참고 자료
+- 재예약 시 이전 이용 정보 참조
+- 고객 서비스 및 문의 시 이용 증빙 자료
+
+## al.data.repository
+
+### 역할
+데이터 소스와 로컬 DB를 연결하여 데이터 접근을 추상화하고 비즈니스 로직을 담당하는 Repository 패턴 구현
+
+### Code
+
+#### data.repository.baseinfo.ALBaseInfoRepository & ALBaseInfoRepositoryImpl
+- 앱에서 사용하는 기초 코드 정보와 공항 정보를 관리하는 Repository
+- 서버에서 기초 데이터를 조회하고 로컬 DB에 캐싱하여 오프라인 지원 및 성능 최적화
+
+##### 변수 및 함수 (Interface)
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|getBaseCodeInfo|-|public|기초 코드 정보 조회|Single<ALBaseCodeInfoModel> 반환|
+|deleteAll|-|public|모든 로컬 데이터 삭제|캐시 초기화|
+
+##### 변수 및 함수 (Implementation)
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|dataSource|private|기초 정보 데이터 소스|ALBaseInfoDataSource|
+|baseCodeDao|private|기초 코드 DAO|ALBaseCodeDao|
+|airportDao|private|공항 정보 DAO|ALAirportDao|
+
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|getBaseCodeInfo|-|override|기초 코드 정보 조회 및 캐싱|서버 응답 상태에 따라 캐싱/로컬 데이터 반환|
+|deleteAll|-|override|로컬 DB 전체 삭제|baseCodeDao, airportDao 모두 삭제|
+
+##### 역할
+- 서버 기초 데이터 동기화 및 로컬 캐싱 관리
+- lastDate 기반 증분 업데이트로 효율적 데이터 관리
+- 네트워크 오류 시 로컬 캐시 데이터 제공
+- 공통 코드 및 공항 정보의 오프라인 지원
+
+#### data.repository.bookmark.ALBookmarkRepository & ALBookmarkRepositoryImpl
+- 사용자의 즐겨찾는 노선 정보를 관리하는 Repository
+- 로컬 DB와 서버 동기화를 통해 즐겨찾기 데이터를 일관성 있게 관리
+
+##### 변수 및 함수 (Interface)
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|getBookmarkList|-|public|즐겨찾기 목록 조회|Single<List<ALBookmarkEntity>> 반환|
+|insertOrUpdate|ALBookmarkEntity|public|즐겨찾기 추가/수정|서버 저장 후 로컬 업데이트|
+|delete|ALBookmarkEntity|public|즐겨찾기 삭제|서버 삭제 후 로컬 제거|
+|requestBookmarkSync|-|public|서버와 동기화|서버 데이터로 로컬 갱신|
+|deleteAll|-|public|모든 즐겨찾기 삭제|로컬 데이터 초기화|
+
+##### 변수 및 함수 (Implementation)
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|dataSource|private|즐겨찾기 데이터 소스|ALBookmarkDataSource|
+|dao|private|즐겨찾기 DAO|ALBookmarkDao|
+
+##### 역할
+- 사용자 즐겨찾기 노선의 서버-로컬 동기화
+- 즐겨찾기 추가/삭제 시 서버 API 호출 후 로컬 반영
+- 네트워크 상태와 관계없이 로컬 즐겨찾기 조회 지원
+- 서버 동기화를 통한 멀티 디바이스 즐겨찾기 공유
+
+#### data.repository.common.ALCommonRepository & ALCommonRepositoryImpl
+- 앱에서 공통으로 사용되는 정보들을 관리하는 Repository
+- 프로모션, 배너, 카드, 약관 등 다양한 공통 데이터를 통합 관리
+
+##### 변수 및 함수 (Interface)
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|getPromotionBanner|String|public|프로모션 배너 조회|위치 코드별 배너|
+|getPromotionPopup|-|public|프로모션 팝업 조회|Single<ALPromotionPopupModel>|
+|getRollingBanner|-|public|롤링 배너 조회|Single<ALRollingBannerModel>|
+|getPaymentMethod|-|public|결제 수단 조회|Single<ALPaymentMethodModel>|
+|getTermsList|-|public|약관 목록 조회|Single<ALTermsListModel>|
+|getCardList|-|public|등록 카드 목록 조회|메인 카드 우선 정렬|
+|getCardInfo|String|public|카드 BIN 정보 조회|카드번호 앞 6자리로 조회|
+
+##### 변수 및 함수 (Implementation)
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|dataSource|private|공통 정보 데이터 소스|ALCommonDataSource|
+
+##### 역할
+- 다양한 공통 정보의 통합 관리
+- 프로모션 및 광고 컨텐츠 제공
+- 사용자 등록 카드 정보 관리 및 메인 카드 우선 처리
+- 카드 BIN 기반 카드사 정보 조회
+- 약관 및 정책 문서 정보 제공
+
+#### data.repository.passengerinfo.ALPassengerInfoRepository & ALPassengerInfoRepositoryImpl
+- 사용자가 자주 사용하는 탑승객 정보를 관리하는 Repository
+- 예약 시 편의성을 위해 탑승객 정보를 로컬에 저장하고 관리
+
+##### 변수 및 함수 (Interface)
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|getList|-|public|탑승객 목록 조회|Single<List<ALPassengerEntity>>|
+|insert|ALPassengerEntity|public|탑승객 정보 추가|Completable 반환|
+|deleteAll|-|public|모든 탑승객 정보 삭제|로컬 데이터 초기화|
+|delete|ALPassengerEntity|public|특정 탑승객 정보 삭제|Completable 반환|
+
+##### 변수 및 함수 (Implementation)
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|dao|private|탑승객 정보 DAO|ALPassengerDao|
+
+##### 역할
+- 자주 사용하는 탑승객 정보의 로컬 저장 및 관리
+- 예약 시 탑승객 정보 자동 완성 기능 지원
+- 개인정보 보호를 위한 로컬 전용 저장
+- 탑승객 정보 추가/삭제를 통한 예약 편의성 향상
+
+
+#### data.repository.recentroute.ALRecentRouteRepository & ALRecentRouteRepositoryImpl
+- 사용자의 최근 검색한 노선 정보를 관리하는 Repository
+- 편도/다구간 검색 기록을 로컬 DB에 저장하여 재검색 편의성 제공
+
+##### 변수 및 함수 (Interface)
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|getList|-|public|최근 검색 목록 조회|Single<List<ALRecentRouteEntity>>|
+|insert|출발지, 도착지 코드|public|편도 검색 기록 저장|Completable 반환|
+|insert|첫번째 출발지/도착지, 두번째 출발지/도착지|public|다구간 검색 기록 저장|시간차를 두어 순서 보장|
+|deleteAllAsync|-|public|비동기 전체 삭제|Completable 반환|
+|deleteAll|-|public|동기 전체 삭제|즉시 실행|
+|delete|ALRecentRouteEntity|public|특정 기록 삭제|Completable 반환|
+
+##### 변수 및 함수 (Implementation)
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|dao|private|최근 검색 DAO|ALRecentRouteDao|
+
+##### 역할
+- 사용자 검색 편의성을 위한 최근 검색 기록 관리
+- 편도/다구간 검색에 따른 차별화된 저장 로직
+- 시간 기반 검색 기록 정렬 및 관리
+- 개인정보 보호를 위한 로컬 전용 저장
+
+#### data.repository.reservation.ALReservationRepository & ALReservationRepositoryImpl
+- 항공권 예약 및 결제, 취소 요청을 처리하는 Repository
+- 예약 생성부터 취소까지 전체 예약 생명주기를 관리
+
+##### 변수 및 함수 (Interface)
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|requestReservation|ALReservationRequest|public|예약 요청 처리|Single<ALReservationModel>|
+|requestPayment|ALPaymentRequest|public|결제 요청 처리|Single<ALPaymentModel>|
+|requestReservationCancel|ALReservationCancelRequest|public|일반 예약 취소|Single<ALReservationCancelModel>|
+|requestReservationCancelByReason|ALReservationCancelByReasonRequest|public|사유 기반 예약 취소|Single<ALReservationCancelByReasonModel>|
+
+##### 변수 및 함수 (Implementation)
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|dataSource|private|예약 데이터 소스|ALReservationDataSource|
+
+##### 역할
+- 항공권 예약 프로세스의 핵심 비즈니스 로직 처리
+- 예약 생성, 결제, 취소의 통합 관리
+- 일반 취소와 사유 기반 취소의 구분 처리
+- 서버 API 호출 및 응답 데이터 변환
+
+#### data.repository.ticket.ALTicketRepository & ALTicketRepositoryImpl
+- 사용자의 예약 내역 및 이용 기록을 조회하는 Repository
+- 예약 목록, 상세 정보, 동기화, 이용 내역 등을 통합 관리
+
+##### 변수 및 함수 (Interface)
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|getReservationList|-|public|예약 목록 조회|Single<ALReservationCompleteListModel>|
+|getReservationDetailList|String|public|예약 상세 조회|여정일련번호로 조회|
+|getReservationSyncList|-|public|예약 동기화 목록|서버에서 최신 상태 조회|
+|getUsingList|ALSelectTicketHisListRequest|public|이용 내역 조회|페이징 처리 지원|
+
+##### 변수 및 함수 (Implementation)
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|dataSource|private|티켓 데이터 소스|ALTicketDataSource|
+
+##### 역할
+- 사용자 예약 내역의 종합 관리
+- 예약 상태별 목록 조회 및 상세 정보 제공
+- 서버와의 예약 정보 동기화
+- 과거 이용 내역 조회를 통한 고객 서비스 지원
+
+#### data.repository.travel.ALTravelRepository & ALTravelRepositoryImpl
+- 항공편 검색 및 운임 규칙 조회를 담당하는 Repository
+- 여행 상품 검색부터 운임 규정 확인까지 예약 전 단계 관리
+
+##### 변수 및 함수 (Interface)
+|함수|매개변수|범위/종속|내용|특징|
+|:-----:|:---:|:---:|:---:|:---:|
+|getTravelList|ALTravelListRequest|public|항공편 검색|Single<ALTravelListModel>|
+|getPreFareRule|ALPreFareRuleRequest|public|예약 전 운임 규칙 조회|Single<ALFareRuleModel>|
+|getPostFareRule|ALPostFareRuleRequest|public|예약 후 운임 규칙 조회|Single<ALFareRuleModel>|
+|getFareDiscountRule|ALFareDiscountRuleRequest|public|신분 할인 규칙 조회|Single<ALFareDiscountRuleModel>|
+
+##### 변수 및 함수 (Implementation)
+|변수|범위|내용|특징|
+|:-----:|:---:|:---:|:---:|
+|dataSource|private|여행 데이터 소스|ALTravelDataSource|
+
+##### 역할
+- 항공편 검색 조건에 따른 결과 제공
+- 예약 전후 운임 규칙 및 약관 정보 조회
+- 신분 할인 대상자를 위한 할인 규칙 확인
+- 항공편 선택 및 예약 진행을 위한 핵심 정보 제공
+- 운임 계산 및 할인 적용을 위한 규칙 데이터 관리
