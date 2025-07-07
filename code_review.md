@@ -257,10 +257,194 @@
 
 #### data.entities.request.ALSelectTicketHisListRequest
 ##### 역할
-- 탑승 완료된 티켓 내역을 조회할 때 서버에 전달하는 요청 모델
+- 탑승 완료된 티켓 내역을 조회할 때 서버에 전달
 - 사용자가 자신의 탑승 이력을 페이징 처리하여 조회할 수 있도록 pageNo 값을 전달하여 요청
 
 #### data.entities.request.ALTermsListRequest
 ##### 역할
-- 연간서비스 코드
-- 약관 코드
+- 약관 목록을 조회할 때 서버에 전달
+- 연동 서비스 코드(stplGrpCd)와 약관코드(stplDvsCd)를 서버에 전달하여 사용자가 특정 연동 서비스에서 사용할 약관 리스트를 요청
+
+#### data.entities.request.ALTravelListRequest
+##### 역할
+- 항공편 검색 조건을 서버에 전달
+- 사용자가 출발지/도착지/날짜/좌석등급/구분에 맞는 탑승객 수를 선택한 정보를 기반으로 서버에 운항 스케줄 리스트를 조회할 때 사용
+
+#### data.entities.response.ALBaseCodeInfoResponse
+##### 역할
+- 공통 코드 및 공항 정보 조회 API
+- 앱 실행 시 또는 특정 시점에 서버로부터 기준 코드와 공항 데이터를 받아 저장하거나 갱신할 때 사용
+
+#### data.entities.response.ALBaseResponse
+##### 역할
+- 모든 API 응답의 공통 베이스 클래스
+- 실제 데이터와 에러 코드, 메시지를 포함
+
+#### data.entities.response.ALBookmarkDeleteResponse
+##### 역할
+- 빈 클래스
+
+#### data.entities.response.ALBookmarkListResponse
+##### 역할
+- 즐겨찾기 목록 조회 API
+- 서버로부터 받은 즐겨찾기 경로 리스트(jrnyList)를 담고 있음
+
+#### data.entities.response.ALBookmarkSaveResponse
+##### 역할
+- 즐겨찾기 저장 API
+- 즐겨찾기 경로가 성공적으로 저장된 등록 일시(rgtDtm)를 서버로부터 받아오기 위한 데이터 클래스
+
+#### data.entities.response.ALCardInfoResponse
+##### 역할
+- 카드 정보 조회 API
+- 입력된 카드 정보를 기준으로 카드에 대한 이름, 승인 기관 코드 명, 체크/법인 여부, 발급사 등을 서버로부터 받아오는 데 사용
+
+#### data.entities.response.ALFareDiscountRuleResponse
+##### 역할
+- 신분 할인 운임 정보 조회
+-  가는편(goIdFareRules)과 오는편(backIdFareRules) 각각에 대해 성인(adt)/소아(chd)/유아(inf)(paxType) 별 할인 정보(FareDiscountRule)를 포함함
+- 할인 명칭, 신분 할인 코드, 운임/세금 및 할인율 등 정보를 포함
+- 특정 여정에 대해 탑승객 신분에 따라 적용 가능한 운임 할인 규칙들을 서버에서 받아오는 데 사용
+
+#### data.entities.response.ALFareRuleResponse
+##### 역할
+- 운임 규정 정보 응답
+- 항공권 예매 시 적용되는 다양한 운임 규정 정보를 담는 모델
+- 규정명, 설명, 정렬 순서, 유형 정보를 포함
+
+#### data.entities.response.ALPaymentMethodResponse
+##### 역할
+- 결제수단 정보 조회
+- 앱에서 결제수단 화면에 출력할 문구, 노출 여부 등을 서버에서 받아오는 역할
+결제 화면에 보여줄 문구 및 표시 여부를 서버에서 받아옴
+
+#### data.entities.response.ALPaymentRespone
+##### 역할
+- 결제 요청 후 서버로부터 받은 응답
+- 결제가 완료된 여정 정보, 예약 키, 상세 예약 키 목록을 포함
+
+#### data.entities.response.ALPromotionBannerResponse
+##### 역할
+- 배너 광고 정보 조회
+- 서버에서 내려준 광고 목록 데이터를 담고 있음
+- advrList: 광고 배너 데이터 리스트 (각 항목은 ResponseInqrAdvrPupStupInf.Data.AdvrList 타입, 별도 모듈 tbike에서 정의된 광고 정보 모델을 재사용)
+
+#### data.entities.response.ALPromotionPopupResponse
+##### 역할
+- 팝업 형태의 광고 또는 공지사항 응답 모델
+- 서버에서 내려준 광고 리스트(advrList) 또는 공지사항 리스트(ntcMttrList) 중 하나를 담고 있음
+- actScsTyp 값에 따라 어떤 종류의 팝업을 보여줄지를 판단하고
+해당 목록을 UI에 바인딩하는 데 사용
+
+#### data.entities.response.ALReservationCancelByReasonResponse
+##### 역할
+- 사유 기반 예약 취소 요청에 대한 응답
+- 취소된 예약 정보 리스트(cancelResult)를 통해 취소된 예약 정보 및 탑승객 목록을 반환함
+- 각각의 항목(CancelInfo)은 개별 예약(orderKey, orderId)과
+해당 예약에 포함된 취소된 탑승객(CanceledPassengerInfo) 목록을 포함
+- 사용자가 특정 사유를 선택하여 예약을 취소했을 때 서버로부터 수신되는 취소 성공 결과를 담음
+
+#### data.entities.response.ALReservationCancelResponse
+##### 역할
+- 일반 예약 취소 요청의 결과를 나타냄
+- 취소 요청 결과와 여정 상태 등을 클라이언트에 전달
+- 예약 취소가 성공했는지, 추가 취소 접수가 필요한지, 여정의 상태가 어떤지 등을 확인
+##### 여정 상태 코드
+|코드|설명|
+|:-----:|:---:|
+|OK|예약완료|
+|XX|취소완료|
+|QQ|취소요청|
+|HL|발권대기|
+
+#### data.entities.response.ALReservationCompleteDetailResponse
+##### 역할
+- 예약이 완료된 후 해당 예약 여정에 대한 상세 정보를 조회하기 위한 데이터 모델
+- 예약/주문 변호, 예약자/탑승객, 항공사 코드/명, 결제 정보, 항공편 정보 등 모든 예약 결과의 종합 정보 제공
+
+##### 데이터 설명
+|항목|설명|
+|:-----:|:---:|
+|jrnySno|여정 일련번호|
+|jrnyStatu|여정 상태 (OK, XX, HL, QQ)|
+|pnrNumber|예약번호(PNR)|
+|orderKey|주문 번호|
+|passengerInfos|탑승객 리스트 및 각자의 요금/환불 정보|
+|airline, airlineName|항공사 코드 및 이름|
+|deptAirport, arrAirport|출발/도착 공항 코드|
+|departureDate, arrivalDate|출발/도착 일시|
+|flightType, flightNumber|여정 타입 및 항공편명|
+|pairKey|여정 조합 키 (왕복 등 구분용)|
+|cabinClass, totalFlightTime|좌석 등급 및 총 비행시간|
+|freessrName, freessrValue|무료 수화물 정보|
+|aprvDtm, aprvInfo|결제 일시 및 정보|
+|cancDtm, cancFee, cancTotalAmt|취소 일시, 수수료, 총 환불 금액|
+|shareAirlineName|공동 운항 항공사 명|
+|PassengerInfo|탑승객 인덱스, 타입, 성별, 생년월일, 요금 정보, 환불 정보 포함|
+|FareInfo|해당 여정에 대한 운임, 세금, 유류세, 수수료 등 상세 정보|
+|Refund|환불 금액 정보|
+|Name|탑승객 이름 구조(first, middle, last)|
+
+#### data.entities.response.ALReservationCompleteListResponse
+##### 역할
+- 항공 예약 시스템에서 사용자의 예약 완료 목록 조회 시 사용되는 응답
+- 예약이 완료된 항공권들의 여정 목록 정보를 조회
+
+#### data.entities.response.ALReservationResponse
+##### 역할
+- 항공 예약 완료 후, 주문번호 및 여정, 탑승객, 결제금액, 할인 정보 등을 포함한 전체 예약 정보를 서버로부터 응답 받음
+- 사용자에게 예매 완료를 표시하기 위한 핵심 정보들이 포함
+##### 주요 구성 정리
+1. 주문/결제 정보
+2. journeys(여정 정보 리스트)
+3. passengerInfos(탑승객 정보)
+4. FareInfo & TotalFareInfo
+
+#### data.entities.response.ALRollingBannerResponse
+##### 역할
+- 앱 홈 화면 또는 주요 화면 상단에 노출되는 롤링 배너 정보를 응답 받음
+- 앱 홈 또는 특정 화면에 공지/광고 배너를 띄워야 할지 판단하고 필요한 정보를 표시하기 위해 사용
+##### 실행 성공 유형
+|유형|설명|
+|:-----:|:---:|
+|T|공지|
+|A|광고|
+|N|응답 없음|
+
+#### data.entities.response.ALTermsListResponse
+##### 역할
+- 약관 목록을 받아오는 응답
+
+#### data.entities.response.ALTravelListResponse
+##### 역할
+- 항공편 조회 결과를 담음
+- 출발지, 도착지, 날짜를 기반으로 가는편/오는편 항공편 리스트 조회
+
+#### data.entities.response.ALUsingListRespoonse
+##### 역할
+- 사용자 탑승 이력 또는 사용 중인 여정 목록을 조회하는 데 사용
+- 사용자가 예약/탑승한 항공편의 이용 내역을 보여주는 응답
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
