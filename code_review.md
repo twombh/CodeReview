@@ -105,7 +105,7 @@
 - UI에 로딩/에러/토스트 같은 상태 이벤트를 안전하게 전달하는 중간 관리자
 
 
-## al.data
+## al.data.datasource
 
 ### 역할
 각각 서버와 직접 통신하는 역할을 하는 클래스
@@ -140,6 +140,8 @@
 ##### 역할
 - 여행 상품 관련 정보 조회
 - 여행 리스트, 요금 규칙 (출발 전/후/할인) 서버에서 조회
+
+## al.data.entities
 
 #### data.entities.request.ALBaseCodeInfoRequest
 ##### 역할
@@ -270,6 +272,7 @@
 ##### 역할
 - 항공편 검색 조건을 서버에 전달
 - 사용자가 출발지/도착지/날짜/좌석등급/구분에 맞는 탑승객 수를 선택한 정보를 기반으로 서버에 운항 스케줄 리스트를 조회할 때 사용
+
 
 #### data.entities.response.ALBaseCodeInfoResponse
 ##### 역할
@@ -425,33 +428,6 @@
 ##### 역할
 - 사용자 탑승 이력 또는 사용 중인 여정 목록을 조회하는 데 사용
 - 사용자가 예약/탑승한 항공편의 이용 내역을 보여주는 응답
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
-- 연간서비스 코드
-- 약관 코드
 
 ## al.data.enums
 
@@ -918,9 +894,6 @@
 - 규정 유형별 분류 (일반/취소/기타)
 - 사용자 동의 및 확인을 위한 규정 텍스트 관리
 
-## al.data.model
-
-### Code
 
 #### data.model.ALPaymentCardModel
 - 결제 카드 정보를 관리하는 모델
@@ -1478,4 +1451,248 @@
 - 신분 할인 대상자를 위한 할인 규칙 확인
 - 항공편 선택 및 예약 진행을 위한 핵심 정보 제공
 - 운임 계산 및 할인 적용을 위한 규칙 데이터 관리
->>>>>>> origin
+
+## al.ext
+### 역할
+- 각종 확장 함수 모음
+
+
+### Code
+#### ext.CalendarExt
+##### 변수 및 함수
+|함수|포맷|설명|
+|:-----:|:---:|:---:|
+|displayDataPattern()|yyyy.MM.dd(E)|날짜 + 요일|
+|displayDataPattern2()|MM.dd(E)|월/일 + 요일|
+|yyyyMMddPattern()|yyyyMMdd|-|
+|yyyyMMddPattern2()|yyyy-MM-dd|-|
+|yyyyMMddhhmmssPattern()|yyyyMMddHHmmss|-|
+yyyyMMddPattern3()|yyyy.MM.dd(EE)|긴 요일 형태|
+
+##### 역할
+- Calendar 객체를 다양한 포맷의 날짜 문자열로 변환하는 확장 함수 모음
+- 날짜 포맷은 Locale.KOREA로 구성
+
+
+
+#### ext.ContextExt
+##### 변수 및 함수
+
+| 함수명 | 매개변수 | 대상 | 설명 |
+|:--------:|:------:|:------:|:------:|
+| Context.startBrowser | url | Context | URL을 기본 브라우저로 실행 |
+| Context.clipboard | label, text | Context | 텍스트 클립보드 복사 후 Toast 노출 (OS 13 이하 - 13부터는 자동) |
+| AppCompatActivity.hideKeyboard() | AppCompatActivity | 현재 포커스된 뷰의 키보드 숨김 |
+| Context.hasApp | intent | Context | 인텐트 기반 앱 설치 여부 확인 |
+| Context.startMarket | intent | Context | 앱 마켓으로 이동 (market://, https://) |
+| Activity.startBannerLink | banner, loginCallBack? | Activity | 배너 이동 링크 처리 (로그인 여부/딥링크/WebView 분기) |
+
+##### 상세 로직 설명
+-  startBrowser(url: String?)
+    - Intent.ACTION_VIEW를 사용하여 외부 브라우저 실행
+    - 예외 발생 시 ConsoleLog로 로그 출력
+- clipboard(label: String, text: String)
+    - 클립보드에 텍스트 복사
+    - Android 13 미만은 직접 Toast 노출 (TIAToastBuilder 사용)
+    - Android 13 이상은 시스템 자동 노출
+- hideKeyboard
+    - 현재 포커스된 뷰의 WindowToken 기준으로 키보드 숨김
+- hasApp(intent: Intent): Boolean
+    - PackageManager를 사용하여 패키지 존재 여부 확인
+    - Android 13 대응을 위한 조건 포함
+- startMarket(intent: Intent)
+    - PlayStore 앱이 없을 경우 웹 링크로 fallback 처리
+- startBannerLink(banner: ResponseInqrAdvrPupStupInf.Data.AdvrList, loginCallBack: (() -> Unit)? = null)
+    - authTknNedYn == "Y"일 경우 로그인 상태 확인 후 토큰 삽입
+    - 이동 경로 타입 코드(mvmnPathTypCd)에 따라 분기
+        - "I": 딥링크 (DeepLinkManager)
+        - "W": 타이틀 있는 WebView (TxbusAdvWebViewActivity.startWithTitle)
+        - "O": 외부 링크
+        - "V": 전체 화면 WebView (startWithNoTitle)
+
+##### 역할
+- AppCompatActivity의 공통 동작을 확장 함수로 제공  
+- 브라우저 열기, 클립보드 복사, 키보드 숨기기, 앱 설치 확인 및 마켓 이동, 배너 클릭 시 동작 처리 등 구현
+
+#### ext.DateExt
+##### 변수 및 함수
+|함수|포맷|설명|
+|:-----:|:---:|:---:|
+|hhmmPattern()|HH:mm|-|
+|yyyyMMddPattern()|yyyyMMdd|-|
+|yyyyMMddhhmmssPattern()|yyyyMMdd|-|
+|displayDatePattern()|yyyy.MM.dd(E)|-|
+|displayDatePattern2()|yyyy-MM-dd|-|
+|displayDatePattern3()|yyyy.MM.dd(E)|-|
+|displayDatePattern4()|yyyy년 M월 d일|-|
+|displayDatePattern5()|yyyy.MM.dd(E) HH:mm|-|
+|hhmmPattern2()|HHmm|-|
+|yyyyMMddhhmmssPattern2()|yyyy-MM-dd'T'HH:mm:ss|-|
+|MMddDayPattern()|MM.dd(E)|-|
+|MMddDayPattern2()|MM월 dd일 E요일|-|
+|MMddDayPattern3()|MM월 dd일 E요일, a hh:mm~|-|
+##### 역할
+- Date 객체를 다양한 포맷의 날짜 및 시간 문자열로 변환하는 확장 함수 모음
+- 날짜 포맷은 Locale.KOREA로 구성
+
+
+#### ext.AirportExt
+##### 역할
+- List<Airport> 객체에 대한 공항 코드 기반 검색 및 이름 반환 확장 함수 제공
+- 공항 코드로부터 공항명 또는 전체 객체를 빠르게 조회할 수 있도록 함
+
+##### 변수 및 함수
+| 함수명 | 제공 타입 | 반환 타입 | 설명 |
+|--------|-------------|-----------|------|
+| getName(airportCode) | List<ALBaseCodeInfoModel.Airport> | String | 주어진 공항 코드에 대응하는 airportArea(공항명) 반환 |
+| getAirport(airportCode) | List<ALBaseCodeInfoModel.Airport> | Airport? | 주어진 공항 코드에 해당하는 Airport 객체 반환 |
+
+##### 상세 로직 설명
+- getName(airportCode: String): String
+    - airportCode와 일치하는 항목을 찾아 해당 airportArea(공항명)를 반환
+    - 찾지 못한 경우 빈 문자열 반환
+    - UI 노출 시 fallback 처리 용이
+- getAirport(airportCode: String): ALBaseCodeInfoModel.Airport?
+    - airportCode와 일치하는 항목을 찾아 Airport 객체 자체를 반환
+    - 객체 내 상세 속성(airportArea, airportCode 등)을 활용
+
+
+#### ext.StringExt
+##### 역할
+- String 및 Int 타입에 유용한 확장 함수들을 정의
+- 항공사, 공항, 국가 등 코드를 이름으로 매핑
+- 이메일, 이름, 생년월일 등 유효성 검사
+- 금액 형식화
+- DecimalFormat을 사용한 원화 쉼표 처리 함수 포함
+
+##### 변수 및 함수
+
+| 함수 | 제공 타입 | 반환 타입 | 설명 |
+|------|-------------|-----------|------|
+| airlineLogo() | String | String | 항공사 코드로 로고 URL 생성 |
+| airlineColor() | String | String | 항공사 코드 로 색상 코드 반환(attr6) |
+| airportArea() | String | String | 공항코드로 공항 지역명 반환 |
+| airportName() | String | String | 공항코드로 공항명 반환 |
+| airport() | String | Airport? | 공항코드로 Airport 객체 반환 |
+| airportWithName() | String | Airport? | 공항명으로 Airport 객체 반환 |
+| nationalityName() | String | String | 국가코드로 국가명 반환 |
+| seatName() | String | String | 좌석코드 → 좌석명 반환 |
+| emailValidation() | String | Boolean | 이메일 형식 유효성 검사 |
+| nameValidation() | String | Boolean | 한글 or 영문만 허용하는 이름 유효성 검사 |
+| isOnlyUpper() | String | Boolean | 영대문자만 포함하는지 검사 |
+| isOnlyKorean() | String | Boolean | 한글만 포함하는지 검사 |
+| isContainLower() | String | Boolean | 소문자가 하나라도 포함되었는지 검사 |
+| dateOfBirthValidation() | String | Boolean | yyyyMMdd 포맷 생년월일 유효성 검사 (실제 날짜 비교 포함) |
+| dateOfBirthValidation2() | String | Boolean | yyyy-MM-dd 포맷 생년월일 유효성 검사 (정규식 기반) |
+| wonFormat() | String? | String | 정수형 문자열을 원화 포맷으로 변환 |
+| wonFormat() | Int | String | 정수를 원화 포맷 문자열로 변환 |
+
+#### ext.ViewExt
+##### 역할
+- View, EditText, ViewPager2, RecyclerView 등 UI 컴포넌트에 대한 공통 확장 함수 모음
+- 클릭 이벤트 처리, 포커스에 따른 UI 상태 변경, 페이지 애니메이션, 중앙 정렬 등 UI 상호작용 로직 간소화
+
+
+##### 함수 상세 설명
+- click()
+    - View 클릭 리스너를 간결하게 등록하는 확장 함수  
+- clicks()
+    - 여러 View에 공통 클릭 이벤트를 등록할 수 있는 유틸 함수  
+- EditText.setStateBackGround(uppercase, validationBlock, onTextChange)
+    - 텍스트 변경 및 포커스 변화에 따라 배경 리소스를 자동으로 변경
+    - 유효성 검사 기반으로 상태를 파란색, 회색, 빨간색으로 표현
+    - uppercase = true일 경우 자동으로 대문자로 변환
+- ViewPager2.paymentPageTransformer(pageMarginPx, offsetPx)
+    - ViewPager2에 마진 및 오프셋 기반 슬라이딩 애니메이션 적용
+-  RecyclerView.setCenterToPosition(position)
+    - 특정 아이템을 가운데 정렬되도록 스크롤 위치를 자동 계산
+    - itemWidth = 92dp, padding = 16dp 기준으로 중앙 오프셋 계산
+
+##### 배경 리소스 조건 요약
+|상황|조건|배경 리소스|
+|:---:|:---:|:---:|
+|포커스 O, 유효/빈칸|O|파란 테두리|
+|포커스 O, 유효 X|X|빨간 테두리|
+|포커스 X, 유효/빈칸|O|회색 테두리|
+|포커스 X, 유효 X|X|빨간 테두리|
+
+## al.module.db.dao
+### 요약
+
+### Code
+#### module.db.dao.ALAirportDao
+##### 역할
+- Room Database의 DAO 인터페이스
+- ALAirportEntity(공항명, 공항 코드, 공항 지역)의 조회, 삽입, 삭제 기능 제공
+
+##### DAO 메서드 설명
+| 함수명 | 반환 타입 | 설명 | 특징 |
+|:--------:|:----------:|:------:|:------:|
+| getList() | List<ALAirportEntity> | 전체 공항 목록을 조회 | 단순 조회 쿼리 |
+| insert(codeList: List<ALAirportEntity>) | - | 공항 목록 삽입 | 같은 키가 있으면 덮어쓰기 (REPLACE 전략) |
+| deleteAll() | - | 모든 공항 데이터 삭제 | 테이블 초기화 용도 |
+
+#### module.db.dao.ALBaseCodeDao
+##### 역할
+- Room Database의 DAO 인터페이스
+- ALBaseCodeEntity(코드 그룹, 코드, 코드명, 정렬 순서, 부가 속성 1~9)의 조회, 삽ㅇ입, 삭제 기능 제공
+
+##### DAO 메서드 설명
+| 함수명 | 반환 타입 | 설명 | 특징 |
+|:--------:|:----------:|:------:|:------:|
+| getList() | List<ALBaseCodeEntity> | 기초 코드 목록 조회 기능을 제공 | 단순 조회 쿼리 |
+| insert(codeList: List<ALBaseCodeEntity>) | - | 기초 코드 목록 삽입 | 같은 키가 있으면 덮어쓰기 (REPLACE 전략) |
+| deleteAll() | - | 모든 기초 코드 데이터 삭제 | 테이블 초기화 용도 |
+
+#### moudle.db.dao.ALBookmarkDao
+##### 역할
+- 사용자의 즐겨찾기 노선 정보(Bookmarks)를 로컬 DB에 저장/조회/삭제하는 DAO
+- 고정핀 기능 (isFixedPin) 우선 정렬을 통해 자주 사용하는 노선을 상단에 배치
+- 고정핀 여부, 생성 시간 순으로 정렬하여 최대 30개 조회
+
+##### 변수 및 함수
+| 함수 | 매개변수 | 반환 타입 | 설명 |
+|:----:|:--------:|:----------:|:------|
+| getList() | - | List<ALBookmarkEntity> | 고정핀 여부를 확인한 후 생성 시간 순 정렬로 최대 30개 즐겨찾기 목록 조회 |
+| insertList(list) | List<ALBookmarkEntity> | - | 즐겨찾기 목록을 일괄 저장 또는 갱신 |
+| insertOrUpdate(bookmark) | ALBookmarkEntity | - | 단일 즐겨찾기 저장 또는 갱신 (OnConflictStrategy.REPLACE) |
+| deleteAll() | - | - | 모든 즐겨찾기 데이터 삭제 |
+| delete(bookmark) | ALBookmarkEntity | - | 특정 즐겨찾기 삭제 |
+
+#### module.db.dao.ALPassengerDao
+##### 역할
+- 사용자가 자주 입력하는 탑승객 정보(인덱스, 생년월일, 국적 코드, 성별, 성, 이름)를 로컬에 저장/조회/삭제하는 DAO
+- 예약 시 반복 입력 최소화를 위한 자동완성 기능 기반
+Single과 Completable을 활용하여 비동기 작업 처리
+Room 기반 DAO이며, 중복 삽입 시 REPLACE 정책으로 덮어쓰기
+
+##### 변수 및 함수
+| 함수 | 매개변수 | 반환 타입 | 설명 |
+|:----:|:--------:|:----------:|:------|
+| getList() | - | Single<List<ALPassengerEntity>> | 저장된 탑승객 정보 전체 조회 |
+| insert(recentRoute) | ALPassengerEntity | Completable | 단일 탑승객 정보 삽입 또는 갱신 |
+| deleteAll() | - | - | 모든 탑승객 정보 삭제 |
+| delete(recentRoute) | ALPassengerEntity | Completable | 특정 탑승객 정보 삭제 |
+
+#### module.db.dao.ALRecentRouteDao
+- 사용자가 검색한 최근 항공 노선 정보를 로컬에 저장 및 관리하는 DAO
+- 최대 5개까지 저장하며, 가장 최근 검색이 상단에 위치
+
+
+##### 주요 함수 및 역할
+
+| 함수 | 매개변수 | 반환 타입 | 설명 |
+|:----:|:--------:|:----------:|:------|
+| getList() | 없음 | Single<List<ALRecentRouteEntity>> | 최근 검색한 노선 목록을 최신순으로 5개 조회 |
+| insert(recentRoute) | ALRecentRouteEntity | Completable | 단일 최근 검색 노선 저장 |
+| insert(recentRouteList) | List<ALRecentRouteEntity> | Completable | 다중 최근 검색 노선 저장 |
+| deleteAllAsync() | - | Completable | 모든 최근 노선 정보 비동기 삭제 |
+| deleteAll() | - | - | 모든 최근 노선 정보 동기 삭제 |
+| delete(recentRoute) | ALRecentRouteEntity | Completable | 특정 검색 노선 삭제 |
+
+##### 특징 및 역할 요약
+- 최근 검색 이력 자동 저장 기능 제공 (편도/다구간 등)
+- LIMIT 5로 최대 5개까지 최근 순서로 유지
+- Room Dao 기반이며 REPLACE 정책 사용하고 동일한 검색은 덮어쓰기
+- 동기/비동기 삭제 모두 제공하여 상황에 따른 유연한 처리 가능
+- 사용자 UX 개선 (재검색 편의성)
