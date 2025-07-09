@@ -1590,7 +1590,7 @@ yyyyMMddPattern3()|yyyy.MM.dd(EE)|긴 요일 형태|
 #### ext.ViewExt
 ##### 역할
 - View, EditText, ViewPager2, RecyclerView 등 UI 컴포넌트에 대한 공통 확장 함수 모음
-- 클릭 이벤트 처리, 포커스에 따른 UI 상태 변경, 페이지 애니메이션, 중앙 정렬 등 UI 상호작용 로직 간소화
+- 클릭 이벤트 처리, 포커스에 따른 UI 상태 변경, 페이지 애니메이션, 중앙 정렬 등 UI 로직 간소화
 
 
 ##### 함수 상세 설명
@@ -1664,7 +1664,7 @@ yyyyMMddPattern3()|yyyy.MM.dd(EE)|긴 요일 형태|
 - 사용자가 자주 입력하는 탑승객 정보(인덱스, 생년월일, 국적 코드, 성별, 성, 이름)를 로컬에 저장/조회/삭제하는 DAO
 - 예약 시 반복 입력 최소화를 위한 자동완성 기능 기반
 Single과 Completable을 활용하여 비동기 작업 처리
-Room 기반 DAO이며, 중복 삽입 시 REPLACE 정책으로 덮어쓰기
+Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 
 ##### 변수 및 함수
 | 함수 | 매개변수 | 반환 타입 | 설명 |
@@ -1676,11 +1676,10 @@ Room 기반 DAO이며, 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 
 #### module.db.dao.ALRecentRouteDao
 - 사용자가 검색한 최근 항공 노선 정보를 로컬에 저장 및 관리하는 DAO
-- 최대 5개까지 저장하며, 가장 최근 검색이 상단에 위치
+- 최대 5개까지 저장하며 가장 최근 검색이 상단에 위치
 
 
 ##### 주요 함수 및 역할
-
 | 함수 | 매개변수 | 반환 타입 | 설명 |
 |:----:|:--------:|:----------:|:------|
 | getList() | 없음 | Single<List<ALRecentRouteEntity>> | 최근 검색한 노선 목록을 최신순으로 5개 조회 |
@@ -1695,4 +1694,153 @@ Room 기반 DAO이며, 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 - LIMIT 5로 최대 5개까지 최근 순서로 유지
 - Room Dao 기반이며 REPLACE 정책 사용하고 동일한 검색은 덮어쓰기
 - 동기/비동기 삭제 모두 제공하여 상황에 따른 유연한 처리 가능
-- 사용자 UX 개선 (재검색 편의성)
+
+## al.module.db.entities
+### 요약
+### Codes
+#### module.db.entities.ALAirportEntity
+##### 역할
+- 항공 시스템 내 공항 코드 및 관련 정보를 저장하는 로컬 Entity
+- Room DB에 저장되며 기본 코드 데이터로 활용
+
+##### Entity 정보
+
+| 필드명 | 타입 | DB 컬럼명 | 설명 |
+|:------:|:----:|:----------:|:-----|
+| airportName | String | airportName | 공항의 이름 |
+| airportCode | String | airportCode | 공항 코드 - @PrimaryKey |
+| airportArea | String | airportArea | 공항이 속한 지역 구분 |
+
+#### module.db.entities.ALBaseCodeEntity
+##### 역할
+- 앱 전반에서 사용하는 기초 코드 정보를 저장하는 로컬 Entity
+- Room DB에 저장되며 코드 그룹 및 코드명으로 식별되는 전반적인 코드 데이터
+
+##### Entity 정보
+
+| 필드명 | 타입 | DB 컬럼명 | 설명 |
+|:------:|:----:|:----------:|:-----|
+| codeGroup | String | codeGroup | 코드 그룹 - @PrimaryKey |
+| code | String | code | 코드 값 - @PrimaryKey |
+| codeName | String | codeName | 코드명 - @PrimaryKey |
+| sort | Int | sort | 정렬 순서 |
+| isUse | Boolean | isUse | 사용 여부 |
+| attr1 ~ attr9 | String | attr1 ~ attr9 | 부가 속성값 |
+
+#### module.db.entities.ALBookmarkEntity
+##### 역할
+- 항공 노선 즐겨찾기(Bookmark) 정보를 저장하는 로컬 Entity
+- Room DB에 저장되며 자주 이용하는 노선을 간편하게 재검색할 수 있도록 지원
+
+##### Entity 정보
+| 필드명 | 타입 | DB 컬럼명 | 설명 |
+|:------:|:----:|:----------:|:-----|
+| departureAirportName | String? | departureAirportName | 출발지 공항명 |
+| departureAirport | String | departureAirport | 출발지 공항 코드 - @PrimaryKey |
+| arrivalAirportName | String? | arrivalAirportName | 도착지 공항명 |
+| arrivalAirport | String | arrivalAirport | 도착지 공항 코드 - @PrimaryKey |
+| isFixedPin | Boolean | isFixedPin | 상단 고정 여부 |
+| nickName | String | nickName | 사용자가 지정한 별칭 |
+| createTime | Long | createTime | 생성 시각 |
+
+#### module.db.entities.ALPassengerEntity
+##### 역할
+- 사용자가 입력한탑승객 정보를 로컬 DB에 저장하기 위한 로컬 Entity
+- Room DB에 저장되며 항공권 예약 시 반복 입력을 줄이기 위해 활용
+- @Parcelize를 통해 Android 컴포넌트 간 전달 가능
+- 별도 식별자 id를 자동 생성 (@PrimaryKey(autoGenerate = true))
+
+##### Entity 정보
+| 필드명 | 타입 | DB 컬럼명 | 설명 |
+|--------|------|-----------|------|
+| id | Int | id | 자동 증가되는 식별자 - @PrimaryKey |
+| dateOfBirth | String | dateOfBirth | 탑승객 생년월일 |
+| nationalityCode | String | nationalityCode | 탑승객 국적 코드 |
+| gender | String | gender | 탑승객 성별 |
+| firstName | String | firstName | 탑승객 성 |
+| lastName | String | lastName | 탑승객 이름 |
+
+#### module.db.entities.ALRecentRouteEntity
+##### 요악
+- 사용자의 최근 검색 노선을 저장하기 위한 로컬 Entity
+- Room DB에 저장되며 편도 또는 다구간 항공편 검색 시 재검색 편의성 제공
+
+##### Entity 정보
+| 필드명 | 타입 | DB 컬럼명 | 설명 |
+|--------|------|-----------|------|
+| departureAirportCode | String | departureAirportCode | 출발지 공항 코드 - @PrimaryKey |
+| arrivalAirportCode | String | arrivalAirportCode | 도착지 공항 코드 - @PrimaryKey |
+| createTime | Long | createTime | 생성 시간 |
+
+## al.module.db
+### Codes
+#### module.db.ALDatabase
+##### 역할
+- 로컬 Room Database 클래스
+- 항공 관련 기초정보, 즐겨찾기, 탑승객 정보, 최근 검색을 저장
+- Room.databaseBuilder()로 생성
+- TiaApp Application Context 기반 싱글톤 인스턴스 구성
+- @Synchronized 사용으로 멀티스레딩 환경에서도 안정적
+
+##### 주요 기능
+| 메서드 | 반환 타입 | 설명 |
+|--------|------------|------|
+| baseCodeDao() | ALBaseCodeDao | 코드 정보 DAO 제공 |
+| recentRoutDao() | ALRecentRouteDao | 최근 검색 노선 DAO 제공 |
+| airportDao() | ALAirportDao | 공항 정보 DAO 제공 |
+| passengerDao() | ALPassengerDao | 탑승객 정보 DAO 제공 |
+| bookmarkDao() | ALBookmarkDao | 즐겨찾기 DAO 제공 |
+| getInstance() | ALDatabase | 싱글톤 인스턴스 반환 |
+
+
+##### 구성된 Entity 목록
+| Entity 클래스명 | 설명 |
+|-----------------|------|
+| ALAirportEntity | 공항 정보 |
+| ALBaseCodeEntity | 기초 코드 정보 |
+| ALBookmarkEntity | 즐겨찾기 노선 정보 |
+| ALPassengerEntity | 최근 입력한 탑승객 정보 |
+| ALRecentRouteEntity | 최근 검색 노선 기록 |
+
+##### Room 설정
+| 항목 | 설정값 |
+|------|--------|
+| version | 2 |
+| exportSchema | false |
+| allowMainThreadQueries() | Main Thread에서도 DB 접근 허용 |
+
+##### 마이그레이션(version 1 → 2)
+- ALBaseCodeEntity에 부가속성 COLUMN(attr5~attr9) 추가
+- SQL 적용 코드
+    ```sql
+    ALTER TABLE 'ALBaseCodeEntity' ADD COLUMN 'attr5' TEXT DEFAULT '' NOT NULL;
+    ALTER TABLE 'ALBaseCodeEntity' ADD COLUMN 'attr6' TEXT DEFAULT '' NOT NULL;
+    ALTER TABLE 'ALBaseCodeEntity' ADD COLUMN 'attr7' TEXT DEFAULT '' NOT NULL;
+    ALTER TABLE 'ALBaseCodeEntity' ADD COLUMN 'attr8' TEXT DEFAULT '' NOT NULL;
+    ALTER TABLE 'ALBaseCodeEntity' ADD COLUMN 'attr9' TEXT DEFAULT '' NOT NULL;
+    ```
+
+## al.module.network.service
+### Codes
+#### network.service.ALCommonService
+##### 역할
+- 공통 정보(광고, 배너, 카드, 결제 수단, 약관)를 조회하는 Retrofit 인터페이스
+- 모든 API는 POST 방식, RxJava의 Single<Response<...>> 반환
+- 공통 응답 구조인 ALBaseResponse<T>를 통해 일관된 데이터 수신
+
+#### 메서드 목록
+
+| 메서드명 | API 엔드포인트 | Request 타입 | Response 데이터 타입 | 설명 |
+|:--|:--|:--|:--|:--|
+| inqrAdvertStupInfo | api/mui/v2/inqrAdvrPupStupInf | ALPromotionBannerRequest | ALPromotionBannerResponse | 광고 배너 설정 정보 조회 |
+| inqrAdvrPupStupInf | api/mui/v2/inqrAdvrPupStupInf | ALPromotionPopupRequest | ALPromotionPopupResponse | 광고 팝업 설정 정보 조회 |
+| inqrMoappBnrList | api/mui/v2/inqrAdvrPupStupInf | ALRollingBannerRequest | ALRollingBannerResponse | 롤링 배너 정보 조회 |
+| inqrPymMnsListAtPym | api/pym/v2/inqrPymMnsListAtPym | ALPaymentMethodRequest | ALPaymentMethodResponse | 결제 시 사용 가능한 결제 수단 목록 조회 |
+| inqrPrpmAutPymStplAgrmYN | api/mbrs/v2/inqrStplList | ALTermsListRequest | ALTermsListResponse | 이용약관 등 약관 목록 조회 |
+| inqrCardBinInfo | api/pym/v2/inqrCardBinInfo | ALCardInfoRequest | ALCardInfoResponse | 카드 BIN 정보 조회 |
+
+#### 특징
+- 동일한 API 경로를 사용하되 Request 객체의 타입으로 기능을 구분
+- 서버 통신 실패/성공 여부를 포함한 ALBaseResponse<T> 래핑 구조
+- 모든 응답은 Retrofit2의 Response<> 래핑 + RxJava의 Single로 감싸져 있음
+- ViewModel 또는 Repository 단에서 처리 용이
