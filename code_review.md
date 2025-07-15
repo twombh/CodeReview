@@ -1828,7 +1828,7 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 - 모든 API는 POST 방식, RxJava의 Single<Response<...>> 반환
 - 공통 응답 구조인 ALBaseResponse<T>를 통해 일관된 데이터 수신
 
-#### 메서드 목록
+##### 메서드 목록
 
 | 메서드명 | API 엔드포인트 | Request 타입 | Response 데이터 타입 | 설명 |
 |:--|:--|:--|:--|:--|
@@ -1844,3 +1844,24 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 - 서버 통신 실패/성공 여부를 포함한 ALBaseResponse<T> 래핑 구조
 - 모든 응답은 Retrofit2의 Response<> 래핑 + RxJava의 Single로 감싸져 있음
 - ViewModel 또는 Repository 단에서 처리 용이
+
+#### network.service.ALService
+##### 역할
+
+##### 메서드 목록
+| 메서드명 | API 엔드포인트 | Request 타입 | Response 데이터 타입 | 설명 |
+|:--|:--|:--|:--|:--|
+| selectBasicCodeInfo | api/u/cmm/v1/selectBaseInfo | ALBaseCodeInfoRequest | ALBaseCodeInfoResponse | 기초 정보 코드 제공 |
+| selectSchList | api/u/sch/v1/selectSchList | ALTravelListRequest | ALTravelListResponse | 여정 정보 제공 |
+| selectPreFareRule | api/u/pnr/v1/selectPreFareRule | ALPreFareRuleRequest | ALFareRuleResponse | 예약 전 운임 규정 |
+| selectFareDcRule | api/u/pnr/v1/selectFareDcRule | ALFareDiscountRuleRequest | ALFareDiscountRuleResponse | 신분 할인 목록 |
+| requestPnrReservation | api/u/pnr/v1/requestPnrReservation | ALReservationRequest | ALRservationResponse | 항공권 예약 |
+| requestPayment | api/u/pnr/v1/requestPayment | ALPaymentRequest | ALPaymentResponse | 항공권 결제 |
+| selectPnrList | api/u/pnr/v1/selectPnrList | Any = Any() | ALRservationCompleteListResponse | 예매 완료 조회 |
+| selectPnrInfo | api/u/pnr/v1/selectPnrInfo | ALReservationCompleteDetailRequest | ALReservationCompleteDetailResponse | 예매 상세 조회 |
+| selectPostFareRule | api/u/pnr/v1/selectPostFareRule | ALPostFareRuleRequest | ALFareRuleResponse | 예약 후 운임 규정 |
+| requestPnrRefund | api/u/pnr/v1/requestPnrRefund | ALReservationCancelRequest | ALReservationCancelResponse | 항공권 예매 취소 |
+| requestSpcPnrRefund | api/u/pnr/v1/requestSpcPnrRefund | ALResrvationCancelByReasonRequest | ALReservationCancelByReasonResponse | 항공권 예매 취소 요청 |
+| requestCurrentPnr | api/u/pnr/v1/requestCurrentPnr | Any = Any() | ALReservationCompleteListResponse | 항공권 초기화 |
+| selectFavorRouteList | api/u/fvrt/v1/selectFavorRouteList | Any = Any() | ALBookmarkListResponse | 즉려찾기 목록 조회 |
+| saveFavorRoute | api/u/fvrt/v1/saveFavorRoute | ALBookmarkSaveRequest | ALBookmarkSaveResponse | 즉려찾기 저장 |
