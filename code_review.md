@@ -1822,7 +1822,7 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 
 ## al.module.network.service
 ### Codes
-#### network.service.ALCommonService
+#### module.network.service.ALCommonService
 ##### 역할
 - 공통 정보(광고, 배너, 카드, 결제 수단, 약관)를 조회하는 Retrofit 인터페이스
 - 모든 API는 POST 방식, RxJava의 Single<Response<...>> 반환
@@ -1845,8 +1845,10 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 - 모든 응답은 Retrofit2의 Response<> 래핑 + RxJava의 Single로 감싸져 있음
 - ViewModel 또는 Repository 단에서 처리 용이
 
-#### network.service.ALService
+#### module.network.service.ALService
 ##### 역할
+- 항공 여정, 예약, 결제, 취소, 즐겨찾기 등 AL(항공) 관련 주요 기능을 담당하는 Retrofit API 인터페이스.
+- 모든 메서드는 RxJava의 Single<Response<...>>를 통해 비동기 호출 처리.
 
 ##### 메서드 목록
 | 메서드명 | API 엔드포인트 | Request 타입 | Response 데이터 타입 | 설명 |
@@ -1863,5 +1865,341 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 | requestPnrRefund | api/u/pnr/v1/requestPnrRefund | ALReservationCancelRequest | ALReservationCancelResponse | 항공권 예매 취소 |
 | requestSpcPnrRefund | api/u/pnr/v1/requestSpcPnrRefund | ALResrvationCancelByReasonRequest | ALReservationCancelByReasonResponse | 항공권 예매 취소 요청 |
 | requestCurrentPnr | api/u/pnr/v1/requestCurrentPnr | Any = Any() | ALReservationCompleteListResponse | 항공권 초기화 |
-| selectFavorRouteList | api/u/fvrt/v1/selectFavorRouteList | Any = Any() | ALBookmarkListResponse | 즉려찾기 목록 조회 |
-| saveFavorRoute | api/u/fvrt/v1/saveFavorRoute | ALBookmarkSaveRequest | ALBookmarkSaveResponse | 즉려찾기 저장 |
+| selectFavorRouteList | api/u/fvrt/v1/selectFavorRouteList | Any = Any() | ALBookmarkListResponse | 즐겨기 목록 조회 |
+| saveFavorRoute | api/u/fvrt/v1/saveFavorRoute | ALBookmarkSaveRequest | ALBookmarkSaveResponse | 즐겨찾기 저장 |
+| deleteFavorRoute | api/u/fvrt/v1/deleteFavorRoute | ALBookmarkDeleteRequest | ALBookmarkDeleteResponse | 즐겨찾기 삭제 |
+| selectTicketHisList | api/u/cent/v1/selectTicketHisList | ALSelectTicketHisListRequest | ALUsingListResponse | 즐겨찾기 삭제 |
+
+## al.module.network
+### Codes
+#### module.network.ALApiClient
+##### 역할
+- AL 모듈의 Retrofit 클라이언트를 구성하는 객체
+- 항공 예매 관련 API 호출을 위한 HTTP 클라이언트 설정 및 인증 처리
+- AccessToken 기반 인증 처리
+- Chucker 및 LoggingInterceptor로 디버깅 지원
+- UUID, OS, App Version 등의 API 요청 공통 헤더 삽입
+
+##### 주요 함수 및 클래스
+
+| 함수/클래스 | 반환타입 | 설명 |
+|:---:|:---:|:---|
+| getRetrofit(baseUrl: String) | Retrofit | 주어진 baseUrl에 맞는 Retrofit 인스턴스 생성 |
+| client() | OkHttpClient | 인증, 타임아웃, 로깅, 인터셉터가 포함된 클라이언트 생성 |
+| AppInterceptor | Interceptor | 공통 헤더 추가 및 토큰 처리용 커스텀 인터셉터 클래스 |
+
+##### 공통 헤더 구성
+
+| 헤더명 | 설명 |
+|:---:|:---|
+| Content-type | application/json;charset=UTF-8 |
+| UUID | App 내 저장된 UUID |
+| appCode | 고정 값 MIC |
+| Connection | close |
+| osKnd | A - Android |
+| osVer | Android OS Version |
+| appVer | 앱 버전 |
+| Authorization | Bearer AccessToken - 로그인 시 |
+
+
+
+## al.provider
+### Codes
+#### provider.ALProvider
+##### 역할
+- AppPreference(sharedPreferences)를 기반으로 항공권 예매 관련 설정값을 저장하고 조회하는 싱글톤 객체
+- 주로 마지막 기초데이터 업데이트 시각 및 마지막 사용 결제수단 정보를 관리함
+- 앱 실행 시 이전에 저장된 기초데이터 업데이트 시간을 확인하여 업데이트 여부 결정
+- 예매 프로세스에서 마지막으로 선택한 결제 수단을 기본으로 보여주기 위한 설정값 제공
+
+##### 변수 및 프로퍼티
+
+| 프로퍼티명 | 타입 | 설명 | 기본값 또는 조건 |
+|------------|------|------|------------------|
+| baseDataLastData | String | 기초데이터 마지막 업데이트 일자 (형식: yyyyMMddHHmmss) | 기본값: ALConstants.DEFAULT_BASE_DATA_LAST_DATE |
+| lastPaymentMethod | Int | 마지막으로 사용한 결제수단 코드 | 기본값: 1 |
+
+##### 내부 구현 방법
+- Android SharedPreferences를 사용해 putString, putInt, getString, getInt 방식으로 저장 및 조회
+- AppPreference.get().sharedPreferences를 통해 전역 Preference 인스턴스를 참조함
+
+## al.ui.bridge
+### Codes
+#### ui.bridge.ALBridgeActivity
+##### 역할
+- 항공 기능 진입 전 NetFunnel을 통한 접속 제어 및 딥링크에 따른 화면 분기를 담당하는 브릿지 액티비티
+- 항공 메인 혹은 예매 상세 화면으로 라우팅 역할을 수행하며, ViewModel을 통해 필요한 초기 데이터를 가져온다
+
+##### 주요 함수 및 클래스
+| 메서드명 | 설명 |
+|----------|------|
+| onCreate() | NetFunnel 시작 및 initObserve() 실행 |
+| init() | 딥링크 타입에 따라 항공 메인 진입 또는 예매 상세 진입 처리 |
+| initObserve() | ViewModel 이벤트 관찰 및 화면 전환 처리 |
+| showNetFunnel() | NetFunnel 로직 실행 후 onSuccess() 시 init() 호출 |
+| orientation() | Android 8.0 제외 모든 OS 버전에서 세로 고정 설정 |
+| finish() | 액티비티 종료 시 애니메이션 제거 |
+
+##### ViewModel 연동
+- ALBridgeViewModel의 이벤트를 관찰하여 화면 전환
+  - onMain → ALMainActivity로 이동
+  - onReservationDetail → ALReservationDetailActivity로 이동
+
+##### 라우팅 함수
+| 메서드 | 설명 |
+|--------|------|
+| startMain() | 항공 메인 화면으로 이동 |
+| startMainWithAirportCode() | 출발지와 도착지 포함 항공 메인 이동 |
+| startReservationDetail() | 특정 여정의 예매 상세 화면 이동 |
+| startActivityForResultWithReservationDetail() | 예매 상세 화면으로 이동하며 결과 콜백 필요 시 사용 |
+
+
+
+#### ui.bridge.ALBridgeViewModel
+##### 역할
+- 항공 메인 또는 예매 상세 진입을 위한 데이터 초기화와 라우팅 이벤트를 담당하는 ViewModel
+- BaseInfo 및 ReservationDetail 정보를 네트워크를 통해 불러오고 전역 데이터로 저장
+
+##### 주요 함수 및 클래스
+| 메서드 | 설명 |
+|--------|------|
+| getBaseInfo() | 기초 코드 정보 호출 후 _onMain 이벤트 트리거 |
+| getBaseInfoAndReservationDetail() | 기초 코드 + 예매 상세 정보 병렬 호출 후 _onReservationDetail 이벤트 트리거 |
+| setBaseInfo() | 기초 코드 데이터를 필터링하여 ALGlobalData에 세팅 |
+| addFilteredCodesToGlobalList() | 조건에 따라 특정 코드 그룹만 필터링해서 대상 리스트에 저장 |
+| Factory | ViewModelProvider.Factory 구현으로 DI - Dependency Injection 대신 객체 생성 위임 |
+
+##### LiveData
+| 변수명 | 타입 | 설명 |
+|--------|------|------|
+| _onMain | MutableLiveData<Event<Any>> | 항공 메인 진입 신호 |
+| onMain | LiveData<Event<Any>> | 외부 접근용 (항공 메인 화면 트리거) |
+| _onReservationDetail | MutableLiveData<Event<ALReservationCompleteDetailModel>> | 예매 상세 진입 신호 |
+| onReservationDetail | LiveData<Event<ALReservationCompleteDetailModel>> | 외부 접근용 (예매 상세 화면 트리거) |
+
+##### 데이터 흐름 요약
+1. ALBridgeActivity에서 딥링크 타입을 기반으로 getBaseInfo() 또는 getBaseInfoAndReservationDetail() 호출
+2. BaseCode 및 ReservationDetail 데이터를 받아서 ALGlobalData에 저장
+3. 이벤트 LiveData로 알려서 Activity에서 화면 전환 처리
+
+##### 예외 및 상태 처리
+- it.isDuplicateLogin(): 중복 로그인 시 상태 변경
+- it.isSuccess().not(): 네트워크 오류 또는 실패 메시지 출력
+- _uiState.value = Event(ALUiState.Alert(...)): 전역 상태 알림용
+
+## al.ui.common
+### Codes
+
+#### ui.common.dialog.ALCommonDialog
+##### 역할
+- 공통 다이얼로그 UI를 제공하는 커스텀 Dialog 클래스
+- 타이틀, 메시지, 확인과 취소 버튼을 유연하게 구성하고 클릭 이벤트를 처리함
+- 다양한 상황에서 재사용 가능한 모듈형 다이얼로그를 제공함
+
+##### 주요 함수 및 클래스
+| 메서드 | 설명 |
+|--------|------|
+| onCreateDialog() | 다이얼로그의 타이틀 제거 및 외부 터치 시 닫힘 여부 설정 |
+| onCreateView() | ViewBinding을 사용하여 레이아웃을 inflate |
+| onViewCreated() | 레이아웃 크기 설정 및 initView() 호출 |
+| initView() | 전달된 title, message, 버튼 텍스트 및 클릭 리스너를 바인딩 |
+| title() | 다이얼로그 타이틀 설정 (String 또는 리소스 ID 사용 가능) |
+| message() | 다이얼로그 메시지 설정 (String 또는 리소스 ID 사용 가능) |
+| positive() | 확인 버튼 텍스트와 클릭 동작 설정 |
+| negative() | 취소 버튼 텍스트와 클릭 동작 설정 |
+| onDestroyView() | ViewBinding 해제하여 메모리 누수 방지 |
+
+##### 주요 변수
+| 변수명 | 타입 | 설명 |
+|--------|------|------|
+| _binding | AlDialogCommonBinding? | ViewBinding을 위한 내부 변수 |
+| title, message | String? | 다이얼로그에 표시할 타이틀과 메시지 |
+| positiveButton, negativeButton | String? | 버튼에 표시할 텍스트 |
+| positiveClick, negativeClick | (() -> Unit)? | 클릭 시 실행할 람다 함수 |
+
+##### 동작 흐름
+1. 다이얼로그가 생성되면 title, message, 버튼 텍스트를 View에 반영
+2. 버튼 클릭 시 등록된 람다(positiveClick, negativeClick) 실행 후 다이얼로그 닫힘
+3. View가 파괴되면 _binding을 null로 설정하여 메모리 정리
+
+#### ui.common.dialog.ALProgressDialog
+##### 역할
+- 사용자 인터랙션을 차단하고 로딩 상태를 보여주는 공통 진행 다이얼로그
+- ProgressBar를 통해 작업 중임을 시각적으로 표시
+- isCancelable = false 설정으로 취소 불가 다이얼로그
+
+###### 주요 함수 및 동작
+| 메서드 | 설명 |
+|--------|------|
+| onCreateView() | 레이아웃 바인딩 후 다이얼로그를 생성하고 외부 클릭 취소 비활성화 처리 |
+| onViewCreated() | 애니메이션 제거 스타일 적용 및 초기화 함수 호출 |
+| init() | 뒷배경 어둡게 처리 제거 + 뷰 바인딩 + 프로그레스 시작 |
+| dismiss() | 프로그레스바 종료 후 다이얼로그 닫기 - 예외 처리 포함 |
+| onDestroyView() | ViewBinding 해제 - 메모리 누수 방지 |
+
+##### 주요 변수
+
+| 변수명 | 타입 | 설명 |
+|--------|------|------|
+| _binding | DialogAlProgressBinding? | ViewBinding 객체의 내부 참조 |
+| binding | DialogAlProgressBinding | 널이 아닌 뷰 바인딩 접근자 |
+
+##### 동작 흐름 요약
+
+1. 다이얼로그가 생성되면 isCancelable = false로 설정되어 사용자가 닫을 수 없음
+2. onViewCreated()에서 다이얼로그 애니메이션 제거 및 init() 호출
+3. init()에서는 배경 흐림 제거 및 ProgressBar 표시
+4. 외부에서 dismiss() 호출 시 로딩 종료 후 안전하게 닫힘 처리
+5. View가 파괴되면 _binding을 null로 설정하여 메모리 해제
+
+##### 특징
+
+- dialog?.window?.setWindowAnimations(R.style.ALAlertNoAnimation): 다이얼로그 애니메이션 비활성화
+
+- dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND): 배경 어두워지는 효과 제거하여 배경과 함께 로딩 표시 가능
+
+- binding.progress.show() / binding.progress.hide(): 커스텀 로딩 UI 표시와 제거
+
+#### ui.common.view.ALActionBar
+##### 역할
+- 항공 서비스 전용 커스텀 액션바 컴포넌트
+- 좌측 뒤로가기 버튼, 중앙 타이틀, 우측 텍스트 버튼으로 구성
+- XML 속성(alActionBarTitle, alLeftSrc, alRightText 등)을 통해 동적 커스터마이징 가능
+
+##### 주요 함수 및 속성
+| 함수/변수 | 설명 |
+|-----------|------|
+| initAttributes(attrs) | XML에서 설정한 커스텀 속성들을 초기화하고 뷰에 반영 |
+| initListener() | 뒤로가기 버튼과 우측 버튼의 클릭 리스너 설정 |
+| setTitle(title: String) | 타이틀 텍스트를 코드로 동적으로 변경 |
+| onBackPress | 뒤로가기 버튼 클릭 시 실행할 콜백 |
+| onRightPress | 우측 텍스트 버튼 클릭 시 실행할 콜백 |
+
+##### XML 커스텀 속성 (res/values/attrs.xml 기준)
+| 속성명 | 타입 | 설명 |
+|--------|------|------|
+| alActionBarTitle | string | 타이틀 텍스트 |
+| alLeftSrc | reference | 좌측 아이콘(drawable) |
+| alLeftString | string | 좌측 아이콘의 접근성 설명 |
+| alRightText | string | 우측 텍스트 버튼 내용 |
+| alIsMain | boolean | 메인화면 여부 - 배경색 투명 처리 |
+
+##### 뷰 구조
+- tvTitle: 중앙 타이틀 텍스트
+- ivBack: 좌측 뒤로가기 아이콘 버튼
+- tvRight: 우측 텍스트 버튼
+- flRoot: 루트 레이아웃 (메인 화면일 경우 투명 배경)
+
+##### 동작 흐름
+1. 생성자에서 initAttributes()로 XML 속성 초기화
+2. tvTitle, ivBack, tvRight 등 구성요소에 값 반영
+3. initListener()로 버튼 클릭 이벤트 연결
+4. 외부에서 onBackPress, onRightPress 람다 할당 가능
+5. 필요시 setTitle()로 타이틀 동적 변경 가능
+
+
+
+#### ui.common.view.ALRecentRouteView
+##### 역할
+- 최근 검색한 항공 출발지와 도착지을 표시하는 커스텀 뷰
+- 삭제 버튼 포함, setData()를 통해 출발지와 도착지 텍스트 설정 가능
+- 항공 메인 또는 검색 화면에서 최근 검색 경로 리스트 UI 구성 시 사용
+
+##### 주요 함수 및 속성
+| 함수/변수 | 설명 |
+|-----------|------|
+| setData(departure: String, arrival: String) | 출발지와 도착지를 텍스트 뷰에 설정하고 접근성 설명 추가 |
+| onCloseClick: () -> Unit | 닫기 버튼 클릭 시 실행될 콜백 - 람다 |
+| init() | 닫기 버튼(ivClose)에 클릭 리스너 등록 |
+
+##### 뷰 구성 요소
+| ID | 역할 |
+|----|------|
+| tvDeparture | 출발지 텍스트 표시 |
+| tvArrival | 도착지 텍스트 표시 |
+| ivClose | 닫기 버튼 |
+
+##### 동작 흐름 요약
+1. 생성자에서 View Binding을 통해 XML 레이아웃 inflate
+2. init() 내에서 닫기 버튼 클릭 리스너 연결
+3. setData() 호출 시 출발지와 도착지 텍스트 설정 및 contentDescription 지정
+4. 사용자가 닫기 버튼을 누르면 외부에서 지정한 onCloseClick() 콜백 실행
+
+##### 접근성 처리
+- 닫기 버튼의 contentDescription은 출발지+도착지 삭제 형식의 문자열을 세팅
+- al_param_delete는 접근성 문자열 리소스로, 화면리더 사용자를 위한 삭제 안내 역할
+
+
+#### ui.common.BindingAdapter
+##### 역할
+- 레이아웃 XML에서 직접 사용할 수 있는 데이터 바인딩 어댑터 정의
+- 이미지 URL 로드 및 공항 코드와 지역 정보를 하나의 문자열로 표시하는 기능 제공
+
+##### 주요 함수 및 설명
+| 함수명 | 설명 |
+|--------|------|
+| alLoadImage | ImageView에 Glide를 이용하여 이미지 로드 - 디스크 캐시 포함 |
+| alAirportName | 공항 지역명과 코드명을 결합하여 TextView에 출력 |
+
+## al.ui.easypay
+### Codes
+#### ui.easypay.ALEasyPayActivity
+##### 역할
+- WebView를 통한 간편결제 페이지 표시 및 결제 결과 수신 처리
+- 결제 성공 시 Intent를 통해 결과 반환
+- result:// URL 스킴을 통해 결제 결과 수신 후 Intent로 결과 전달
+- 외부 앱 링크도 처리하며 미설치 시 마켓으로 유도
+- WebView에 JavaScript 설정 및 Alert 대체 다이얼로그 사용
+- POST 방식으로 인코딩된 파라미터로 결제 URL 요청
+
+##### 주요 함수 및 설명
+| 함수 | 설명 |
+|----------|------|
+| init() | 백버튼 누르면 WebView 뒤로가기 또는 액티비티 종료 |
+| initView() | WebView 설정 및 결제 페이지 로딩, URL 스킴 처리 |
+| shouldOverrideUrlLoading() | 결제 결과 처리 또는 외부 앱 실행, 마켓 연결 등 URL 스킴 제어 |
+| onJsAlert() | JS alert 호출 시 AlertDialogFragment로 대체 |
+| postUrl() | 결제 요청 파라미터 생성 후 서버에 전송 |
+
+## al.ui.farerules
+### Codes
+#### ui.farerules.adapter.ALFareRulesAdapter
+##### 역할
+- ALFareRuleModel.FareRule 데이터를 기반으로 RecyclerView에서 항공 운임 규칙 정보를 표시하는 Adapter
+- 제목과 설명을 표시하며 설명은 HTML 형태로 파싱되어 표시됨
+
+##### 구성 요약
+| 구성 요소 | 설명 |
+|----------|------|
+| rollingBanner | 운임 규칙 데이터 리스트 |
+| FareRulesHolder | 뷰 홀더 클래스, 바인딩 객체를 통해 데이터 표시 |
+| Html.fromHtml() | 설명 텍스트가 HTML 형식일 수 있으므로 이를 텍스트로 변환 |
+
+##### 데이터 흐름
+- 외부에서 ALFareRuleModel.FareRule 리스트를 받아와 Adapter에 전달
+- onCreateViewHolder()에서 뷰 바인딩 객체 생성
+- onBindViewHolder()에서 해당 포지션의 아이템을 bind()에 전달
+- bind() 함수에서 텍스트 뷰에 운임 규칙 정보 설정 - HTML 변환 포함
+
+#### ui.farerules.ALFareRulesActivity
+##### 역할
+- 항공 운임 규칙 리스트를 보여주는 단순 화면
+- ALFareRulesAdapter를 통해 전달받은 운임 규칙 데이터를 RecyclerView에 출력
+
+##### 주요 구성 및 설명
+| 구성 요소 | 설명 |
+|-----------|------|
+| ALFareRulesAdapter | RecyclerView에 운임 규칙 아이템을 표시 |
+| actionBar.onBackPress | 뒤로 가기 버튼 눌렀을 때 finish() 처리 |
+| intent.getParcelableArrayListExtra() | 인텐트를 통해 운임 규칙 리스트를 받아옴 |
+| viewModel() | 별도의 ViewModel 없음 (null 반환) |
+
+##### 버전 분기 처리
+- Android 33+ (TIRAMISU)부터 getParcelableArrayListExtra()에 타입 명시 필요
+- 그 이하 버전에서는 명시 없이 사용 가능
+
+##### 데이터 흐름 요약
+- onCreate() → initView() 호출
+- 인텐트에서 운임 규칙 리스트 추출
+- ALFareRulesAdapter에 전달해 RecyclerView에 바인딩
+- 사용자 뒤로가기 버튼 누르면 finish() 호출로 액티비티 종료
