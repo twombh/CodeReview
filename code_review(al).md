@@ -23,7 +23,7 @@
 |ViewModel|-|abstract|하위 클래스에서 viewModel 제공|ALBaseViewModel형|
 ##### 역할
 - 데이터 바인딩과 UI 초기화를 간소화
-- ViewModel의 UI 상태를 옵저빙하여 다이얼로그, 토스트 등 공통 UI 처리
+- ViewModel의 UI 상태를 옵저빙하여 다이얼로그, 토스트와 같은 공통 UI 처리
 - 메모리 누수 방지 (WeakReference 사용)
 - 재시작 시 초기화 처리
 - 액티비티 전환 로직의 공통화
@@ -81,7 +81,7 @@
     - API 호출과 UI 상태 이벤트를 통합 관리
 - ALUiState
     - UI에 전달되는 일회성 상태 메시지들을 정의
-    - 로딩, 에러, 알림 등 UI에 보여줄 상태를 표현하는 구조
+    - 로딩, 에러, 알림과 같은 UI에 보여줄 상태를 표현하는 구조
 ##### 변수 및 함수
 |변수|범위|내용|특징|
 |:-----:|:---:|:---:|:---:|
@@ -90,7 +90,7 @@
 
 |함수|매개변수|범위/종속|내용|특징|
 |:-----:|:---:|:---:|:---:|:---:|
-|callToRemote|다수|protected|서버 API 호출을 실행하고, 결과에 따라 onSuccess, onError, onFailed, ALUiState 등으로 UI에 상태를 전달하는 메서드|single<T>로 서버 api 호출|
+|callToRemote|다수|protected|서버 API 호출을 실행하고, 결과에 따라 onSuccess, onError, onFailed, ALUiState로 UI에 상태를 전달하는 메서드|single<T>로 서버 api 호출|
 |callToLocal|다수|protected|값이 없는 비동기 작업 성공만 콜백으로 전달|-|
 |onCleared|-|override|등록된 모든 Rx 구독 해제하여 메모리 누수 방지|-|
 |ALUiState|-|sealed|UI에 전달할 수 있는 다양한 상태들을 타입 안전하게 표현|sealed class를 써서 패턴 매칭에 유리|
@@ -123,18 +123,18 @@
 
 #### data.datasource.AlCommonDataSource
 ##### 역할
-- 프로모션 배너, 팝업, 결제 수단, 약관, 카드 BIN 정보 등
+- 프로모션 배너, 팝업, 결제 수단, 약관, 카드 BIN 정보
 - 앱 내에서 공통으로 재사용되는 정보들을 조회
 
 #### data.datasource.ALReservationDataSource
 ##### 역할
-- 예약 생성, 결제 요청, 환불 요청, 사유 기반 환불 등
+- 예약 생성, 결제 요청, 환불 요청, 사유 기반 환불
 - 티켓/여정 예약 전후 단계의 API
 
 #### data.datasource.ALTicketDataSource
 ##### 역할
 - 발권/예약 내역 조회
-- 예약 리스트, 상세 정보, 동기화 정보, 사용 이력 등을 서버로부터 가져옴
+- 예약 리스트, 상세 정보, 동기화 정보, 사용 이력을 서버로부터 가져옴
 
 #### data.datasource.ALTravelDataSource
 ##### 역할
@@ -173,8 +173,8 @@
 |필드명|설명|
 |:-----:|:---:|
 |carrierCode|운항 항공사 코드|
-|deptAirport/arrAirport|출발/도착 공항 코드|
-|departureDate/arrivalDate|출발/도착 일시|
+|deptAirport/arrAirport|출발과 도착 공항 코드|
+|departureDate/arrivalDate|출발과 도착 일시|
 |flightNumber|편명|
 |cabinClass|좌석 클래스|
 |bookingClass|운임 클래스|
@@ -193,8 +193,8 @@
 
 #### data.entities.request.ALPaymentRequest
 ##### 역할
-- 항공권 결제 요청 시 필요한 여정, 탑승객, 카드, 운임 정보 등을 서버에 전달하기 위한 요청
-- 성인/아동 운임, 프로모션 할인 금액, 카드정보, 결제 수단, 이지페이 정보 등 결제에 필요한 모든 데이터를 포함
+- 항공권 결제 요청 시 필요한 여정, 탑승객, 카드, 운임 정보을 서버에 전달하기 위한 요청
+- 성인/아동 운임, 프로모션 할인 금액, 카드정보, 결제 수단, 이지페이 정보와 같은 결제에 필요한 모든 데이터를 포함
 
 |필드명|설명|
 |:-----:|:---:|
@@ -204,9 +204,9 @@
 |passengerInfos|탑승객 정보|
 |totalAirFare, totalFare|운임 총액 (세금 포함 여부에 따라 구분)|
 |totalPromotionDiscountAmount 외|다양한 할인 금액 합계|
-|CardInfo|카드 결제 수단 및 관련 정보, 결제 금액 등|
+|CardInfo|카드 결제 수단 및 관련 정보, 결제 금액|
 |FreeBaggage|여정별 무료 수하물 서비스 정보|
-|EasyPayInfo|이지페이 결제에 필요한 인증값 (대한항공 등에서 사용됨)|
+|EasyPayInfo|이지페이 결제에 필요한 인증값 (대한항공에서 사용됨)|
 
 #### data.entities.request.ALPostFareRuleRequest
 ##### 역할
@@ -216,7 +216,7 @@
 #### data.enitities.request.ALPreFareRuleRequest
 ##### 역할
 - 항공권 예약 이전 단계에서 운임 규칙을 조회할 때 사용하는 요청 모델
-- 여정 키, 운임 키, PAIR 키, 항공사 코드, 출발/도착 공항, 출발일자 등 여정의 식별 정보를 기반으로 서버에 운임 규칙을 요청함
+- 여정 키, 운임 키, PAIR 키, 항공사 코드, 출발/도착 공항, 출발일자와 같은 여정의 식별 정보를 기반으로 서버에 운임 규칙을 요청함
 - 선택적으로 프로모션 ID도 함께 전달
 
 #### data.entities.request.ALPromotionBannerRequest
@@ -255,7 +255,7 @@
 #### data.entities.request.ALRollingBannerRequest
 ##### 역할
 - 슬라이드 배너 정보를 조회할 때 사용
-- 서비스 구분 코드(advrSvcDvsCd)와 노출 위치 코드(advrLocDvsCd)를 서버에 전달하여 홈 화면 등 특정 위치에 띄울 롤링 배너 정보를 서버에서 가져올 때 사용
+- 서비스 구분 코드(advrSvcDvsCd)와 노출 위치 코드(advrLocDvsCd)를 서버에 전달하여 홈 화면과 같은 특정 위치에 띄울 롤링 배너 정보를 서버에서 가져올 때 사용
 
 #### data.entities.request.ALSelectTicketHisListRequest
 ##### 역할
@@ -301,13 +301,13 @@
 #### data.entities.response.ALCardInfoResponse
 ##### 역할
 - 카드 정보 조회 API
-- 입력된 카드 정보를 기준으로 카드에 대한 이름, 승인 기관 코드 명, 체크/법인 여부, 발급사 등을 서버로부터 받아오는 데 사용
+- 입력된 카드 정보를 기준으로 카드에 대한 이름, 승인 기관 코드 명, 체크/법인 여부, 발급사를 서버로부터 받아오는 데 사용
 
 #### data.entities.response.ALFareDiscountRuleResponse
 ##### 역할
 - 신분 할인 운임 정보 조회
 -  가는편(goIdFareRules)과 오는편(backIdFareRules) 각각에 대해 성인(adt)/소아(chd)/유아(inf)(paxType) 별 할인 정보(FareDiscountRule)를 포함함
-- 할인 명칭, 신분 할인 코드, 운임/세금 및 할인율 등 정보를 포함
+- 할인 명칭, 신분 할인 코드, 운임/세금 및 할인율과 같은 정보를 포함
 - 특정 여정에 대해 탑승객 신분에 따라 적용 가능한 운임 할인 규칙들을 서버에서 받아오는 데 사용
 
 #### data.entities.response.ALFareRuleResponse
@@ -319,7 +319,7 @@
 #### data.entities.response.ALPaymentMethodResponse
 ##### 역할
 - 결제수단 정보 조회
-- 앱에서 결제수단 화면에 출력할 문구, 노출 여부 등을 서버에서 받아오는 역할
+- 앱에서 결제수단 화면에 출력할 문구, 노출 여부를 서버에서 받아오는 역할
 결제 화면에 보여줄 문구 및 표시 여부를 서버에서 받아옴
 
 #### data.entities.response.ALPaymentRespone
@@ -351,8 +351,8 @@
 #### data.entities.response.ALReservationCancelResponse
 ##### 역할
 - 일반 예약 취소 요청의 결과를 나타냄
-- 취소 요청 결과와 여정 상태 등을 클라이언트에 전달
-- 예약 취소가 성공했는지, 추가 취소 접수가 필요한지, 여정의 상태가 어떤지 등을 확인
+- 취소 요청 결과와 여정 상태를 클라이언트에 전달
+- 예약 취소가 성공했는지, 추가 취소 접수가 필요한지, 여정의 상태가 어떤지를 확인
 ##### 여정 상태 코드
 |코드|설명|
 |:-----:|:---:|
@@ -364,7 +364,7 @@
 #### data.entities.response.ALReservationCompleteDetailResponse
 ##### 역할
 - 예약이 완료된 후 해당 예약 여정에 대한 상세 정보를 조회하기 위한 데이터 모델
-- 예약/주문 변호, 예약자/탑승객, 항공사 코드/명, 결제 정보, 항공편 정보 등 모든 예약 결과의 종합 정보 제공
+- 예약/주문 변호, 예약자/탑승객, 항공사 코드/명, 결제 정보, 항공편 정보와 같은 모든 예약 결과의 종합 정보 제공
 
 ##### 데이터 설명
 |항목|설명|
@@ -378,14 +378,14 @@
 |deptAirport, arrAirport|출발/도착 공항 코드|
 |departureDate, arrivalDate|출발/도착 일시|
 |flightType, flightNumber|여정 타입 및 항공편명|
-|pairKey|여정 조합 키 (왕복 등 구분용)|
+|pairKey|여정 조합 키 (왕복과 같은 구분용)|
 |cabinClass, totalFlightTime|좌석 등급 및 총 비행시간|
 |freessrName, freessrValue|무료 수화물 정보|
 |aprvDtm, aprvInfo|결제 일시 및 정보|
 |cancDtm, cancFee, cancTotalAmt|취소 일시, 수수료, 총 환불 금액|
 |shareAirlineName|공동 운항 항공사 명|
 |PassengerInfo|탑승객 인덱스, 타입, 성별, 생년월일, 요금 정보, 환불 정보 포함|
-|FareInfo|해당 여정에 대한 운임, 세금, 유류세, 수수료 등 상세 정보|
+|FareInfo|해당 여정에 대한 운임, 세금, 유류세, 수수료와 같은 상세 정보|
 |Refund|환불 금액 정보|
 |Name|탑승객 이름 구조(first, middle, last)|
 
@@ -396,7 +396,7 @@
 
 #### data.entities.response.ALReservationResponse
 ##### 역할
-- 항공 예약 완료 후, 주문번호 및 여정, 탑승객, 결제금액, 할인 정보 등을 포함한 전체 예약 정보를 서버로부터 응답 받음
+- 항공 예약 완료 후, 주문번호 및 여정, 탑승객, 결제금액, 할인 정보를 포함한 전체 예약 정보를 서버로부터 응답 받음
 - 사용자에게 예매 완료를 표시하기 위한 핵심 정보들이 포함
 ##### 주요 구성 정리
 1. 주문/결제 정보
@@ -608,7 +608,7 @@
 
 #### data.model.appmodel.ALAppEasyPayRequestInfo
 - 간편결제 요청 시 필요한 정보를 담는 데이터 클래스
-- 대한항공 등 특정 항공사의 간편결제 연동 시 사용되는 여정별 결제 정보 관리
+- 대한항공과 같은 특정 항공사의 간편결제 연동 시 사용되는 여정별 결제 정보 관리
 
 ##### 변수 및 함수
 |변수|범위|내용|특징|
@@ -802,7 +802,7 @@
 ##### 역할
 - 사용자 즐겨찾기 노선 목록 관리
 - 서버 응답 데이터를 Room Entity 형태로 변환
-- 고정 핀 여부, 별명, 생성시간 등 메타 정보 포함
+- 고정 핀 여부, 별명, 생성시간과 같은 메타 정보 포함
 - 로컬 DB 저장을 위한 데이터 구조 제공
 
 #### data.model.ALBookmarkSaveModel
@@ -906,7 +906,7 @@
 
 |내부 클래스|설명|
 |:-----:|:---:|
-|PaymentCard|개별 카드 정보 (카드번호, 보안데이터, 유효기간, 카드명, 카드사 등)|
+|PaymentCard|개별 카드 정보 (카드번호, 보안데이터, 유효기간, 카드명, 카드사)|
 
 |확장함수|매개변수|범위/종속|내용|특징|
 |:-----:|:---:|:---:|:---:|:---:|
@@ -960,7 +960,7 @@
 - 결제 완료 후 예약 번호 및 주문 정보 관리
 - 여정별 결제 결과 분리 저장
 - 예약 조회 및 관리를 위한 키 정보 제공
-- 후속 처리(발권, 취소 등)를 위한 참조 데이터
+- 후속 처리(발권, 취소)를 위한 참조 데이터
 
 #### data.model.ALPromotionBannerModel
 - 프로모션 배너 정보를 관리하는 모델
@@ -1060,7 +1060,7 @@
 
 #### data.model.ALReservationCompleteDetailModel
 - 예약 완료 상세 정보를 관리하는 종합 모델
-- 탑승객, 운임, 일정, 결제 등 예약과 관련된 모든 세부 정보를 구조화
+- 탑승객, 운임, 일정, 결제와 같은 예약과 관련된 모든 세부 정보를 구조화
 
 ##### 변수 및 함수
 |변수|범위|내용|특징|
@@ -1070,7 +1070,7 @@
 |pnrNumber|val|예약 번호|nullable String|
 |orderKey|val|주문 번호|nullable String|
 |passengerInfos|val|탑승객 정보 목록|List<PassengerInfo>, 기본값 빈 리스트|
-|airline ~ shareAirlineName|val|항공편 정보|항공사, 공항, 일시, 좌석 등|
+|airline ~ shareAirlineName|val|항공편 정보|항공사, 공항, 일시, 좌석|
 
 |내부 클래스|설명|
 |:-----:|:---:|
@@ -1113,7 +1113,7 @@
 - 예약 내역 목록 화면에서 사용할 요약 정보 제공
 - 여정 상태별 목록 필터링 및 표시
 - 예약 상세 화면 진입을 위한 기본 정보 관리
-- 탑승객 수 및 좌석 등급 등 핵심 정보 요약 표시
+- 탑승객 수 및 좌석 등급과 같은 핵심 정보 요약 표시
 
 #### data.model.ALReservationModel
 - 예약 생성 API 응답을 처리하는 종합 모델
@@ -1130,8 +1130,8 @@
 
 |내부 클래스|설명|
 |:-----:|:---:|
-|Journey|여정 상세 정보 (항공사, 공항, 일시, 세그먼트, PNR 등)|
-|Segment|항공편 구간 정보 (예약등급, 좌석등급, 운행사, 비행시간 등)|
+|Journey|여정 상세 정보 (항공사, 공항, 일시, 세그먼트, PNR)|
+|Segment|항공편 구간 정보 (예약등급, 좌석등급, 운행사, 비행시간)|
 |Leg|개별 비행편 정보 (운행사, 공항, 일시, 대기시간)|
 |PassengerInfo|탑승객 상세 정보 (개인정보, 운임정보, 환불정보)|
 |FareInfo|운임 상세 정보 (각종 요금, 할인, 프로모션)|
@@ -1149,7 +1149,7 @@
 - 탑승객별 개별 운임 및 할인 정보 관리
 - 각종 프로모션 및 할인 금액의 세부 계산
 - 결제 시 필요한 운임 정보 제공
-- PNR, 여정 키 등 항공사 연동을 위한 참조 데이터 관리
+- PNR, 여정 키와 같은 항공사 연동을 위한 참조 데이터 관리
 
 #### data.model.ALRollingBannerModel
 - 롤링 배너 조회 API 응답을 처리하는 모델
@@ -1172,7 +1172,7 @@
 
 #### data.model.ALTermsListModel
 - 약관 목록 조회 API 응답을 처리하는 모델
-- 서비스 이용약관 및 개인정보처리방침 등의 약관 정보를 관리
+- 서비스 이용약관 및 개인정보처리방침과 같은 약관 정보를 관리
 
 ##### 변수 및 함수
 |변수|범위|내용|특징|
@@ -1205,9 +1205,9 @@
 
 |내부 클래스|설명|
 |:-----:|:---:|
-|Travel|개별 항공편 정보 (항공사, 공항, 일시, 운임, 좌석, 프로모션 등)|
+|Travel|개별 항공편 정보 (항공사, 공항, 일시, 운임, 좌석, 프로모션)|
 |FreeBaggage|무료 수하물 서비스 정보 (서비스명, 코드, 값, 대상, 단위)|
-|PaxTypeFares|탑승객 타입별 운임 정보 (기본요금, 세금, 할인 등)|
+|PaxTypeFares|탑승객 타입별 운임 정보 (기본요금, 세금, 할인)|
 
 |확장함수|매개변수|범위/종속|내용|특징|
 |:-----:|:---:|:---:|:---:|:---:|
@@ -1308,7 +1308,7 @@
 
 #### data.repository.common.ALCommonRepository & ALCommonRepositoryImpl
 - 앱에서 공통으로 사용되는 정보들을 관리하는 Repository
-- 프로모션, 배너, 카드, 약관 등 다양한 공통 데이터를 통합 관리
+- 프로모션, 배너, 카드, 약관과 같은 다양한 공통 데이터를 통합 관리
 
 ##### 변수 및 함수 (Interface)
 |함수|매개변수|범위/종속|내용|특징|
@@ -1407,7 +1407,7 @@
 
 #### data.repository.ticket.ALTicketRepository & ALTicketRepositoryImpl
 - 사용자의 예약 내역 및 이용 기록을 조회하는 Repository
-- 예약 목록, 상세 정보, 동기화, 이용 내역 등을 통합 관리
+- 예약 목록, 상세 정보, 동기화, 이용 내역를 통합 관리
 
 ##### 변수 및 함수 (Interface)
 |함수|매개변수|범위/종속|내용|특징|
@@ -1512,7 +1512,7 @@ yyyyMMddPattern3()|yyyy.MM.dd(EE)|긴 요일 형태|
 
 ##### 역할
 - AppCompatActivity의 공통 동작을 확장 함수로 제공  
-- 브라우저 열기, 클립보드 복사, 키보드 숨기기, 앱 설치 확인 및 마켓 이동, 배너 클릭 시 동작 처리 등 구현
+- 브라우저 열기, 클립보드 복사, 키보드 숨기기, 앱 설치 확인 및 마켓 이동, 배너 클릭 시 동작 처리 구현
 
 #### ext.DateExt
 ##### 변수 및 함수
@@ -1554,14 +1554,14 @@ yyyyMMddPattern3()|yyyy.MM.dd(EE)|긴 요일 형태|
     - UI 노출 시 fallback 처리 용이
 - getAirport(airportCode: String): ALBaseCodeInfoModel.Airport?
     - airportCode와 일치하는 항목을 찾아 Airport 객체 자체를 반환
-    - 객체 내 상세 속성(airportArea, airportCode 등)을 활용
+    - 객체 내 상세 속성(airportArea, airportCode)을 활용
 
 
 #### ext.StringExt
 ##### 역할
 - String 및 Int 타입에 유용한 확장 함수들을 정의
-- 항공사, 공항, 국가 등 코드를 이름으로 매핑
-- 이메일, 이름, 생년월일 등 유효성 검사
+- 항공사, 공항, 국가와 같은 코드를 이름으로 매핑
+- 이메일, 이름, 생년월일 유효성 검사
 - 금액 형식화
 - DecimalFormat을 사용한 원화 쉼표 처리 함수 포함
 
@@ -1589,8 +1589,8 @@ yyyyMMddPattern3()|yyyy.MM.dd(EE)|긴 요일 형태|
 
 #### ext.ViewExt
 ##### 역할
-- View, EditText, ViewPager2, RecyclerView 등 UI 컴포넌트에 대한 공통 확장 함수 모음
-- 클릭 이벤트 처리, 포커스에 따른 UI 상태 변경, 페이지 애니메이션, 중앙 정렬 등 UI 로직 간소화
+- View, EditText, ViewPager2, RecyclerView과 같은 UI 컴포넌트에 대한 공통 확장 함수 모음
+- 클릭 이벤트 처리, 포커스에 따른 UI 상태 변경, 페이지 애니메이션, 중앙 정렬과 같은 UI 로직 간소화
 
 
 ##### 함수 상세 설명
@@ -1690,7 +1690,7 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 | delete(recentRoute) | ALRecentRouteEntity | Completable | 특정 검색 노선 삭제 |
 
 ##### 특징 및 역할 요약
-- 최근 검색 이력 자동 저장 기능 제공 (편도/다구간 등)
+- 최근 검색 이력 자동 저장 기능 제공 (편도/다구간)
 - LIMIT 5로 최대 5개까지 최근 순서로 유지
 - Room Dao 기반이며 REPLACE 정책 사용하고 동일한 검색은 덮어쓰기
 - 동기/비동기 삭제 모두 제공하여 상황에 따른 유연한 처리 가능
@@ -1836,7 +1836,7 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 | inqrAdvrPupStupInf | api/mui/v2/inqrAdvrPupStupInf | ALPromotionPopupRequest | ALPromotionPopupResponse | 광고 팝업 설정 정보 조회 |
 | inqrMoappBnrList | api/mui/v2/inqrAdvrPupStupInf | ALRollingBannerRequest | ALRollingBannerResponse | 롤링 배너 정보 조회 |
 | inqrPymMnsListAtPym | api/pym/v2/inqrPymMnsListAtPym | ALPaymentMethodRequest | ALPaymentMethodResponse | 결제 시 사용 가능한 결제 수단 목록 조회 |
-| inqrPrpmAutPymStplAgrmYN | api/mbrs/v2/inqrStplList | ALTermsListRequest | ALTermsListResponse | 이용약관 등 약관 목록 조회 |
+| inqrPrpmAutPymStplAgrmYN | api/mbrs/v2/inqrStplList | ALTermsListRequest | ALTermsListResponse | 이용약관과 같은 약관 목록 조회 |
 | inqrCardBinInfo | api/pym/v2/inqrCardBinInfo | ALCardInfoRequest | ALCardInfoResponse | 카드 BIN 정보 조회 |
 
 #### 특징
@@ -1847,8 +1847,8 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 
 #### module.network.service.ALService
 ##### 역할
-- 항공 여정, 예약, 결제, 취소, 즐겨찾기 등 AL(항공) 관련 주요 기능을 담당하는 Retrofit API 인터페이스.
-- 모든 메서드는 RxJava의 Single<Response<...>>를 통해 비동기 호출 처리.
+- 항공 여정, 예약, 결제, 취소, 즐겨찾기와 AL(항공) 관련 주요 기능을 담당하는 Retrofit API 인터페이스
+- 모든 메서드는 RxJava의 Single<Response<...>>를 통해 비동기 호출 처리
 
 ##### 메서드 목록
 | 메서드명 | API 엔드포인트 | Request 타입 | Response 데이터 타입 | 설명 |
@@ -1878,7 +1878,7 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 - 항공 예매 관련 API 호출을 위한 HTTP 클라이언트 설정 및 인증 처리
 - AccessToken 기반 인증 처리
 - Chucker 및 LoggingInterceptor로 디버깅 지원
-- UUID, OS, App Version 등의 API 요청 공통 헤더 삽입
+- UUID, OS, App Version의 API 요청 공통 헤더 삽입
 
 ##### 주요 함수 및 클래스
 
@@ -2064,7 +2064,7 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 ##### 역할
 - 항공 서비스 전용 커스텀 액션바 컴포넌트
 - 좌측 뒤로가기 버튼, 중앙 타이틀, 우측 텍스트 버튼으로 구성
-- XML 속성(alActionBarTitle, alLeftSrc, alRightText 등)을 통해 동적 커스터마이징 가능
+- XML 속성(alActionBarTitle, alLeftSrc, alRightText)을 통해 동적 커스터마이징 가능
 
 ##### 주요 함수 및 속성
 | 함수/변수 | 설명 |
@@ -2092,7 +2092,7 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 
 ##### 동작 흐름
 1. 생성자에서 initAttributes()로 XML 속성 초기화
-2. tvTitle, ivBack, tvRight 등 구성요소에 값 반영
+2. tvTitle, ivBack, tvRight와 같은 구성요소에 값 반영
 3. initListener()로 버튼 클릭 이벤트 연결
 4. 외부에서 onBackPress, onRightPress 람다 할당 가능
 5. 필요시 setTitle()로 타이틀 동적 변경 가능
@@ -2157,7 +2157,7 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 |----------|------|
 | init() | 백버튼 누르면 WebView 뒤로가기 또는 액티비티 종료 |
 | initView() | WebView 설정 및 결제 페이지 로딩, URL 스킴 처리 |
-| shouldOverrideUrlLoading() | 결제 결과 처리 또는 외부 앱 실행, 마켓 연결 등 URL 스킴 제어 |
+| shouldOverrideUrlLoading() | 결제 결과 처리 또는 외부 앱 실행, 마켓 연결과 같은 URL 스킴 제어 |
 | onJsAlert() | JS alert 호출 시 AlertDialogFragment로 대체 |
 | postUrl() | 결제 요청 파라미터 생성 후 서버에 전송 |
 
@@ -2203,3 +2203,896 @@ Room 기반 DAO이며 중복 삽입 시 REPLACE 정책으로 덮어쓰기
 - 인텐트에서 운임 규칙 리스트 추출
 - ALFareRulesAdapter에 전달해 RecyclerView에 바인딩
 - 사용자 뒤로가기 버튼 누르면 finish() 호출로 액티비티 종료
+
+## al.ui.main
+### Codes
+#### ui.main.adapter.ALAirportAdapter
+##### 역할
+- ALBaseCodeInfoModel.Airport 리스트를 기반으로 공항 선택 화면을 구성하는 RecyclerView Adapter
+- 선택된 공항은 강조 표시되고 선택 시 외부 콜백(onAirportSelect)을 통해 알림
+
+##### 주요 구성 및 설명
+| 구성 요소 | 설명 |
+|-----------|------|
+| airportList | 공항 데이터 리스트 |
+| currentAirportCode | 현재 선택된 공항 코드 (선택 여부 표시 용도) |
+| onAirportSelect | 사용자가 공항을 선택했을 때 호출되는 콜백 |
+| AirportHolder | ViewHolder 클래스, 각 공항 정보를 레이아웃에 바인딩 |
+
+##### 주요 함수
+| 함수 | 설명 |
+|------|------|
+| onCreateViewHolder() | ViewHolder 및 바인딩 객체 생성 |
+| getItemCount() | 공항 리스트 개수 반환 |
+| onBindViewHolder() | 포지션에 해당하는 ViewHolder에 데이터 바인딩 |
+| AirportHolder.bind() | 공항 이름과 공항 코드를 표시하고 현재 선택 여부에 따라 스타일 변경 및 클릭 이벤트 처리 |
+
+##### UI 처리 로직
+- 공항명이 존재하면 지역 + 코드 형태로 텍스트 표시하고 없으면 지역명만 표시
+- airport.airportCode == currentAirportCode일 경우
+  - 텍스트 색상: 마스코트 컬러 - 자주색(al_48004a)
+  - 선택 표시 뷰(vSelector): VISIBLE
+  - 선택 상태: true
+- 그 외
+  - 텍스트 색상: 일반 회색(al_555555)
+  - 선택 표시 뷰: GONE
+  - 선택 상태: false
+
+##### 접근성 처리
+- tvAirportArea.contentDescription에 접근성용 공항명 제공 - 공항 코드 철자 분리
+
+##### 데이터 흐름 요약
+1. 외부에서 공항 리스트와 현재 선택된 공항 코드 전달
+2. onCreateViewHolder → ViewHolder 생성
+3. onBindViewHolder → ViewHolder의 bind() 실행
+4. bind() 내에서 공항 정보 표시 및 선택 스타일 적용
+5. 사용자 클릭 시 onAirportSelect 콜백 호출
+
+
+#### ui.main.adapter.ALBookmarkAdapter
+##### 역할
+- ALBookmarkEntity 리스트를 기반으로 즐겨찾기 항공 노선을 RecyclerView로 표시
+- 출발과 도착지와 닉네임, 고정 여부를 표현하며 항목 클릭 시 콜백으로 이벤트 전달
+
+##### 주요 구성 및 설명
+| 구성 요소 | 설명 |
+|-----------|------|
+| bookmarkList | 즐겨찾기 항공 노선 정보 리스트 |
+| onItemClick | 항목 클릭 시 실행되는 콜백 함수 |
+| BookmarkHolder | ViewHolder 클래스, 항목 UI와 데이터 바인딩 수행 |
+
+##### 주요 함수
+| 함수 | 설명 |
+|------|------|
+| onCreateViewHolder() | ViewHolder 및 바인딩 객체 생성 |
+| onBindViewHolder() | 각 항목에 해당하는 데이터를 ViewHolder에 바인딩 |
+| getItemCount() | 전체 즐겨찾기 항목 수 반환 |
+| BookmarkHolder.bind() | 항목에 포함된 닉네임과 출도착지와 고정핀 표시 및 클릭 처리 |
+
+##### UI 처리 로직
+- nickName 존재 여부에 따라 표시 여부 제어
+  - 있으면 tvNickname에 표시하고 VISIBLE
+  - 없으면 GONE 처리
+- tvDeparture, tvArrival에 출발지와 도착지 이름 표시
+- ivPin은 isFixedPin == true일 때만 VISIBLE
+- 전체 항목 클릭 시 onItemClick(item) 실행
+
+##### 데이터 흐름 요약
+1. 외부에서 bookmarkList와 onItemClick 전달
+2. onCreateViewHolder() → ViewHolder 생성
+3. onBindViewHolder() → bind() 호출하여 데이터 바인딩
+4. View 내부에 노선 정보와 상태 UI 표시
+5. 클릭 이벤트 시 onItemClick(item) 콜백 전달
+
+#### ui.main.adapter.ALCalendarAdapter
+##### 역할
+- 항공권 예약을 위한 달력 선택 기능을 제공하는 RecyclerView Adapter
+- 월별 헤더와 일자 아이템을 혼합하여 표현
+- 편도 및 왕복에 따라 날짜 선택 및 UI 구성이 동적으로 달라짐
+- AsyncListDiffer를 활용해 달력 리스트를 효율적으로 관리
+
+##### 주요 구성 및 설명
+| 구성 요소 | 설명 |
+|-----------|------|
+| journeyType | 편도, 왕복과 같은 여정 종류에 따라 UI 처리 방식 결정 |
+| holidayList | 공휴일 데이터를 기반으로 날짜 색상 처리 |
+| onDayClick | 날짜 선택 시 외부에 선택 결과 전달 |
+| callback | 이전 달과 다음 달 이동 시 사용 |
+| departureCalendar, arrivalCalendar | 선택된 출발일과 도착일을 저장 |
+| ITEM_TYPE_HEADER, ITEM_TYPE_DAY | 아이템 구분 (헤더: 년과 월, 날짜) |
+
+##### ViewHolder 구성
+| 뷰홀더 | 역할 |
+|--------|------|
+| CalendarHolder | 날짜 셀 UI를 그리며 선택 상태, 공휴일, 왕복과 편도 표시 |
+| HeaderHolder | 년과 월 표시 + 이전 달과 다음 달 이동 처리 |
+
+##### 날짜 표시 처리
+- today, oneYearLater 범위 내에서만 선택 가능
+- 공휴일은 holidayList.pbhlDt 기준으로 색상 다르게 처리
+- 요일에 따라 일요일, 토요일은 색상 강조
+- 선택된 날짜(가는날/오는날)일 경우 배경색 및 타이틀 강조
+
+##### 날짜 선택 처리 로직 (왕복)
+1. 출발일만 선택된 경우 → 클릭한 날짜가 오는날
+2. 출발과 도착 모두 선택된 경우 → 클릭한 날짜로 출발일 초기화, 도착일 초기화
+3. 같은 날짜 선택 시 → 당일 왕복 처리
+
+##### 날짜 선택 처리 로직 (편도)
+- 클릭한 날짜를 출발일로 저장
+
+##### 접근성 처리
+- 날짜 셀에 접근성 설명 추가 (tvTitle.text + yyyyMMdd 형식)
+- 선택 가능 여부도 접근성 노드에 설정
+
+##### 이전 달과 다음 달 이동
+- Header에서 leftThinIcon, rightThinIcon 클릭 시 callback(true/false, Calendar) 호출
+- 오늘보다 이전 달 또는 1년 이후 달은 이동 버튼 비활성화
+
+##### 데이터 흐름 요약
+1. 외부에서 달력 데이터 리스트 전달 (updateList)
+2. ViewType에 따라 Header/Day ViewHolder 생성
+3. CalendarHolder.bind()에서 날짜 상태에 따라 UI 처리
+4. 날짜 클릭 시 onDayClick(departure, arrival) 전달
+5. 월 이동 시 callback(true/false, Calendar) 실행
+
+#### ui.main.adapter.ALReservationCompleteAdapter
+##### 역할
+- 예약 완료 항공 여정 정보를 리스트 형태로 표시하는 RecyclerView Adapter
+- 각 여정(Journey)에 대한 항공사, 출발과 도착 공항, 시간, 예약 상태의 정보를 카드 형태로 구성
+- 사용자가 특정 예약을 선택할 수 있도록 클릭 이벤트를 제공
+
+#### ui.main.bottomsheet.ALAirportSelectBottomSheet
+##### 역할
+- 공항 선택 기능을 제공하는 BottomSheetDialogFragment 클래스
+- 최근 검색한 노선 목록과 전체 공항 리스트를 Grid 형태로 보여줌
+- 사용자가 공항을 선택하거나 최근 노선을 클릭하면 ViewModel에 정보 전달 후 BottomSheet 종료
+- ViewModel(ALMainViewModel)을 공유하여 선택된 공항 상태를 관리함
+
+#### ui.main.bottomsheet.ALBookmarkBottomSheet
+##### 역할
+- 즐겨찾기(Bookmark) 공항 정보를 보여주는 BottomSheetDialogFragment 클래스
+- ALMainViewModel의 bookmarkList를 기반으로 공항 목록을 표시하며, 항목 선택 시 출발지와 도착지를 설정 후 BottomSheet 종료
+- 즐겨찾기 항목이 없을 경우 빈 화면 뷰를 보여줌
+- 접근성 사용자를 위한 focus 제어 및 안내 문구 설정 포함
+
+#### ui.main.bottomsheet.ALDateSelectBottomSheet
+##### 역할
+- 사용자가 항공 여정 날짜를 선택할 수 있는 BottomSheetDialogFragment
+- 여정 타입(편도와 왕복)에 따라 달력 UI 구성 및 선택 로직을 제어함
+- ALCalendarAdapter를 통해 커스텀 달력 목록을 렌더링하며 날짜 선택 시 출발일과 도착일을 ViewModel에 반영함
+- 접근성 사용자를 위한 focus 제어 및 안내 문구 설정 포함
+
+#### ui.main.bottomsheet.ALInfantChildInfoBottomSheet
+##### 역할
+- 유아 및 어린이 관련 안내 정보를 제공하는 BottomSheetDialogFragment
+- 단순 안내 창 형태로 확인 버튼(btnConfirm) 클릭 시 BottomSheet가 닫힘
+
+#### ui.main.bottomsheet.ALPassengerSelectBottomSheet
+##### 역할
+- 탑승객 수(성인/소아/유아) 선택을 위한 BottomSheetDialogFragment
+- ALMainViewModel의 임시 승객 정보(initTempPassengerInfo)를 초기화
+- 확인 버튼 클릭 시 setPassengerInfo()로 선택 내용 반영
+- 취소 시 clearTempPassengerInfo() 호출로 변경 내용 폐기
+
+#### ui.main.ALMainActivity
+##### 역할
+- 항공권 예매 메인 화면을 담당하는 액티비티
+- 검색 조건(출발지와 도착지, 날짜, 인원) 설정 및 최근 예약 리스트, 광고 배너, 롤링 배너를 표시
+- ViewModel과 바인딩되어 사용자의 입력과 이벤트를 관찰하고 처리
+- 다양한 BottomSheet 호출 및 예약 결과 페이지로 이동하는 역할 수행
+
+##### 주요 구성 요소
+| 구성 요소 | 설명 |
+|----------|------|
+| ALMainViewModel | 메인 화면 관련 상태 및 데이터 관리 |
+| ALReservationCompleteAdapter | 예약 완료 리스트를 ViewPager2로 표시 |
+| 다양한 BottomSheet들 | 공항 선택, 날짜 선택, 탑승객 수 선택, 즐겨찾기 |
+| Glide | 광고 이미지 및 배너 로딩 |
+| AirbridgeManager | 광고 클릭 트래킹 처리 |
+| TIAToastBuilder | 날짜 미선택 시 사용자 알림 |
+
+##### 데이터 흐름 요약
+- onCreate()에서 init(), deepLink(), initView(), initObserver() 호출
+- Intent로 전달된 출/도착 공항 코드 처리 - deepLink
+- 버튼 클릭 및 각 UI 이벤트에서 ViewModel 데이터 변경
+- ViewModel의 LiveData를 observe 하여 UI 자동 갱신
+- 최근 예약 리스트, 광고 배너, 롤링 배너, 프로모션 팝업과 같은 동적 UI 처리
+
+##### ViewModel 연동 및 처리
+- showBottomSheet: 사용자 액션에 따라 적절한 BottomSheet 호출
+- rollingBanner: 롤링 배너 데이터 변경 시 ViewPager 갱신
+- promotionPopup: 활성화된 프로모션이 있을 경우 팝업 노출
+- reservationCompleteList: 최근 예약 정보 바인딩
+- promotionBanner: 상단 광고 배너 이미지 및 설명 표시
+
+#### ui.main.ALMainViewModel
+##### 역할
+- ALMainActivity에서 사용되는 메인 ViewModel로, 항공권 여정 정보, 프로모션, 예약 리스트, 최근 경로를 관리
+- UI에서 발생하는 이벤트를 처리하고 관련 데이터를 구성하여 UI로 전달
+- BottomSheet 호출 이벤트와 여정 정보 커밋, 데이터 초기화와 같은 다양한 로직 수행
+
+##### 주요 LiveData 및 변수 요약
+
+| 변수명 | 타입 | 설명 |
+|--------|------|------|
+| _journeyInfo, _journeyInfoMultiWay | MutableLiveData<ALAppJourneyInfo> | 여정 정보 (일반 경로와 다구간) |
+| _promotionBanner, _promotionPopup, _rollingBanner | MutableLiveData<Model> | 각종 배너 및 팝업 관련 데이터 |
+| _reservationCompleteList | MutableLiveData<ALReservationCompleteListModel> | 예약 완료 리스트 |
+| _recentRouteList | MutableLiveData<List<ALRecentRouteEntity>> | 최근 검색 경로 리스트 |
+| _showBottomSheet | MutableLiveData<Event<MainBottomSheet>> | 바텀시트 열기 트리거 |
+| _passengerInfo, _tempPassengerInfo | MutableLiveData<ALAppPassengerInfo> | 여정 인원 정보 |
+| bookmarkList, yearCalendar | ArrayList | 즐겨찾기 목록, 연간 달력 데이터 |
+| multiWayType, airportSelectType | enum | 현재 다구간 타입, 공항 선택 위치 |
+
+##### 핵심 함수 및 역할
+
+| 함수명 | 역할 |
+|--------|------|
+| init() | 초기 데이터 병렬 호출 (배너, 예약, 휴일) |
+| onJourneyClick() | 여정 타입(편도/왕복/다구간) 클릭 시 UI 상태 변경 |
+| onDateClick(), setDateInfo() | 날짜 바텀시트 호출 및 날짜 정보 설정 |
+| onAirportClick(), setAirportInfo() | 공항 선택 및 저장 처리 |
+| onPassengerInfoClick() 외 | 인원 정보 관련 BottomSheet 호출 및 변경 |
+| checkDuplicateAirport() | 출발/도착 공항 중복 확인 |
+| getSelectedDateInfo(), getCurrentAirportCode() | 현재 선택된 날짜 또는 공항코드 반환 |
+| commitJourneyInfo() | 여정 정보 글로벌 저장 및 최근 경로 로컬 저장 |
+| getReservationList(), reservationListReloadClick() | 예약 리스트 불러오기 및 갱신 |
+| getRecentRouteList(), deleteRecentRouteList() | 최근 경로 로컬 조회 및 삭제 |
+| onSwapFirstRouteClick(), onSwapSecondRouteClick() | 출도착지 교환 처리 |
+| getYearCalendar() | 달력 렌더링용 연간 날짜 및 더미 데이터 생성 |
+
+##### 상태 및 동작 흐름 요약
+- init() 시 Single.zip을 사용하여 병렬 API 호출 → 결과는 각각의 LiveData에 반영됨
+- 사용자 인터랙션 발생 시 LiveData 변경 → UI 자동 반응 (데이터 바인딩 기반)
+- 공항, 날짜, 인원, 예약은 BottomSheet를 통해 설정하며 Event<MainBottomSheet>로 View에 통지
+- 여정 정보는 ALGlobalData에 저장 후 검색 진행
+- 중복 공항 체크, 날짜 유효성 체크와 같은 유효성 검사 포함
+- 비동기 작업은 RxJava 기반, subscribeOn 및 observeOn 구성 사용
+
+## al.ui.passengerinfoadd
+### Codes
+
+#### passengerinfoadd.bottomsheet.ALNationalitySelectForAddBottomSheet
+##### 역할
+- 여권정보 입력 시 국적 선택을 위한 BottomSheet
+- ALPassengerInfoAddViewModel의 국적 리스트를 가져와 ALNationalityAdapter를 통해 리스트 표시
+- 사용자가 국적을 선택하면 콜백을 통해 선택 값을 전달하고 BottomSheet를 닫음
+
+#### passengerinfoadd.ALPassengerInfoAddActivity
+##### 역할
+- 항공 여정 예약 시 필요한 탑승객 정보(이름, 생년월일, 성별, 국적)를 입력받는 Activity
+- 사용자 입력값에 대한 유효성 검증, ViewModel 바인딩, 국적 선택 BottomSheet 연동을 수행
+- ViewModel(ALPassengerInfoAddViewModel)을 통해 입력된 데이터를 저장하고 다음 단계로 넘김
+
+#### passengerinfoadd.ALPassengerInfoAddViewModel
+##### 역할
+- 탑승자 정보 추가 화면(ALPassengerInfoAddActivity)에서 사용자의 입력값을 저장 및 검증하는 ViewModel
+- 탑승자 성명, 생년월일, 국적, 성별의 정보를 수집하고 유효성 검사 수행
+- 국적에 따라 한글과 영문 이름 형식 체크 및 로컬 DB(ALPassengerInfoRepository)에 저장
+- 저장 성공 시 다음 화면 이동 이벤트(_onNextStep)를 발생시킴
+
+## al.ui.passengerinfoinput
+### Codes
+#### passengerinfoinput.adapter.ALFareDiscountRuleAdapter
+##### 역할
+- 할인 규칙 목록(FareDiscountRule)을 보여주는 RecyclerView Adapter
+- 현재 선택된 할인 코드(currentPtcCode)와 비교하여 체크 표시를 표시하고 숨김 처리
+- 각 항목 클릭 시 콜백을 통해 선택 항목을 외부로 전달
+- 접근성 향상을 위해 accessibilityDelegate를 활용해 선택 여부 표시
+
+#### passengerinfoinput.adapter.ALNationalityAdapter
+##### 역할
+- 국적 목록(nationalityList)을 표시하는 RecyclerView Adapter
+- 현재 선택된 국적(currentNationalityCode)과 비교하여 선택 상태를 시각적으로 표시
+- 항목 클릭 시 외부 콜백을 통해 선택된 항목 전달
+- 접근성을 위해 accessibilityDelegate를 통해 선택 상태를 알림
+
+#### passengerinfoinput.adapter.ALPassengerInfoInputAdapter
+##### 역할
+- 탑승자 정보를 입력받는 RecyclerView Adapter
+- 첫 번째 아이템은 예약자 정보를 입력하는 뷰, 나머지는 개별 탑승자 정보를 입력하는 뷰
+- 탑승자 정보는 이름, 성, 생년월일, 성별, 국적, 운임 할인 정보를 포함
+- 예약자 정보와 동일 체크 시 자동으로 입력 필드 채우기 가능
+- ViewModel과 연결되어 실시간 데이터 반영 및 유효성 검사 처리
+- 국적 및 할인 정보는 바텀시트로 선택 가능
+
+#### passengerinfoinput.bottomsheet.ALFareDiscountRuleBottomSheet
+##### 역할
+- 운임 할인 규칙을 선택하는 바텀시트 UI 컴포넌트
+- ALMultiWayType에 따라 첫 번째 여정 또는 두 번째 여정에 적용할 수 있는 할인 규칙 목록을 표시하고 선택 가능
+- 사용자가 항목을 선택하면 ViewModel에 할인 정보 저장 후 바텀시트 닫힘
+- 선택된 할인 정보는 콜백으로 호출자에게 전달 가능+
+
+#### passengerinfoinput.bottomsheet.ALNationalitySelectBottomSheet
+##### 역할
+- 탑승자 국적을 선택할 수 있는 국적 선택 바텀시트
+- RecyclerView를 통해 국적 리스트를 제공하고 선택된 항목을 ViewModel에 저장함
+- 선택 후 콜백을 통해 호출 측에 선택된 국적명을 전달하고 바텀시트 종료
+
+#### passengerinfoinput.ALPassengerInfoInputActivity
+
+##### 역할
+- 사용자가 입력한 여러 탑승자 정보를 확인 및 수정할 수 있는 화면 - Activity
+- RecyclerView를 이용해 예약자 및 동반 탑승자 정보를 입력받고 검증
+- 승객 선택 화면, 결제 화면으로의 이동 처리
+- ViewModel(ALPassengerInfoInputViewModel)과 바인딩하여 입력 상태를 실시간 반영
+
+#### passengerinfoinput.ALPassengerInfoInputViewModel
+##### 역할
+- 여러 탑승자의 정보 입력 및 검증을 관리하는 ViewModel
+- 운임 할인 규칙 조회, 탑승자 정보 유효성 검사, 예약 요청 데이터 구성, 탑승자별 요금 설정을 담당
+- UI의 입력 필드와 연결되어 실시간 검증 및 상태 업데이트 제공
+
+##### 예약 진행 흐름 요약
+1. getPassengerList()로 탑승자 초기 데이터 구성  
+2. 사용자 입력 → setXXX()로 passengerInfo 데이터 갱신  
+3. getFareDiscountRule()로 운임 할인 규칙 조회  
+4. UI에서 할인 선택 시 → setFirstFareInfo() / setSecondFareInfo() 호출  
+5. 유효성 체크 (checkValidation()) 통과하면 → onInputCompleteClick()에서 예약 요청 구성  
+6. ALGlobalData.reservationInfo에 최종 예약 데이터 저장 후 결제화면으로 이동
+
+##### 유효성 기준
+| 항목 | 기준 |
+|------|------|
+| 이름/성 | nameValidation() 통과 |
+| 생년월일 | dateOfBirthValidation2() 통과 |
+| 나이 | 성인/소아/유아 기준 개월 수 부합 여부 (checkAge()) |
+| 국적 | 한국: 한글 성명, 외국: 영문 대문자만 허용 |
+| 성별 | 입력 여부 필수 |
+| 이메일 | emailValidation() 통과 |
+
+## al.ui.passengerinfolist
+### Codes
+#### passengerinfolist.adapter.ALPassengerInfoListAdapter
+##### 역할
+- 탑승자 정보 불러오기 선택 시 목록 및 추가 항목을 표시하는 RecyclerView 어댑터
+- 기존 저장된 ALPassengerEntity 목록을 보여주고 선택 또는 삭제 기능 제공
+- 탑승자 수가 9명 미만일 경우 마지막 항목에 추가하기 뷰를 함께 표시
+
+#### passengerinfolist.ALPassengerInfoListActivity
+##### 역할
+- 저장된 탑승자 정보 목록을 보여주고 선택하거나 새로 추가할 수 있는 화면
+- 사용자가 특정 타입의 탑승자(성인/소아/유아)를 선택하고 완료하면 결과를 호출한 액티비티로 반환
+- 삭제, 추가, 선택, 연령 체크의 UI 이벤트와 ViewModel 연동을 처리
+
+#### passengerinfolist.ALPassengerInfoListViewModel
+##### 역할
+- 저장된 탑승자 목록(ALPassengerEntity) 조회, 삭제, 선택 처리
+- 좌석 유형(성인/소아/유아)에 따른 나이 조건 체크 로직
+
+##### 나이 체크 로직
+| 나이 구간 | 개월 수 | 좌석 타입 허용 |
+|-----------|---------|----------------|
+| 성인      | 156개월 이상 (만 13세 이상) | ADULT만 가능 |
+| 소아      | 24개월 이상 ~ 156개월 미만 (만 2세 이상 ~ 13세 미만) | CHILD만 가능 |
+| 유아      | 24개월 미만 | INFANT, 단 CHILD 좌석 예매는 허용 |
+
+##### 특징
+- Factory 객체를 통해 Activity에서 ViewModel 생성 시 ALPassengerInfoRepository 주입
+- 의존성 주입을 위한 커스텀 팩토리 패턴 활용
+
+## al.ui.payment
+### Codes
+#### payment.adapter.ALFareDetailAdapter
+##### 역할
+- 결제 화면에서 탑승자별 운임 상세 정보를 표시하는 RecyclerView 어댑터
+- 운임, 세금, 유류할증료, 발권수수료 및 할인 금액을 계산 및 표시
+- ALPaymentViewModel을 참조하여 원래 내야하는 운임 및 총합 계산 수행
+
+
+##### 할인 계산 및 표시
+| 항목 | 로직 |
+|------|------|
+| discountAirFare | 기본운임 |
+| discountAirTax | 기본세금 |
+| discountFuelCharge | 기본유류할증료 |
+| discountTkFee | 기본발권수수료 |
+
+- 위 값이 0이 아닌 경우에만 할인 금액 및 뷰(cl4, cl6, cl8, cl10)를 VISIBLE 처리  
+- 모든 할인값이 0인 경우엔 할인 태그(tvDiscountTag) 숨김
+
+
+#### payment.adapter.ALPayemntCardAdapter
+##### 역할
+- 결제 카드 리스트(등록된 카드 및 새 카드 등록)를 RecyclerView에 표시하는 Adapter
+- 카드 정보(ALPaymentCardModel.PaymentCard)를 뷰에 바인딩하고 화면 너비에 따라 카드번호 폰트 크기를 동적으로 조절
+- 마지막 항목에 카드 등록하기 버튼을 포함하여 클릭 시 onCardResister() 콜백 실행
+
+
+#### payment.adapter.ALTermsAdapter
+##### 역할
+- 결제 화면에서 약관 및 운임규정 항목을 RecyclerView에 표시하는 Adapter
+- 각 항목은 일반 약관(termsList), 여정 1의 운임규정, 여정 2의 운임규정(왕복일 경우에만) 중 하나
+- 약관 항목을 클릭 시 onTermsClick(item) 실행하며 운임규정 항목을 클릭 시 onFareRuleClick(Boolean 값) 실행
+- termsAgreeList를 통해 약관 동의 여부 상태를 체크하고 토글
+- 시각 장애인 접근성을 고려하여 accessibilityDelegate에서 contentDescription, isChecked 설정
+
+
+#### payment.bottomsheet.ALFareDetailBottomSheet
+##### 역할
+- 항공 운임 상세 내역을 사용자에게 보여주는 BottomSheetDialog
+- ALPaymentViewModel에서 제공하는 전체 운임 정보를 ALFareDetailAdapter로 바인딩하여 RecyclerView에 표시
+- 바텀시트 UI는 반쯤 열려 있는 상태에서 시작되며 슬라이드 시 더 확장 가능
+- 하단 여백을 슬라이드 비율에 따라 실시간으로 조절하여 하단 뷰가 화면 밖으로 밀려나는 문제를 방지
+
+#### payment.bottomsheet.ALKoreanAirPaymentGuideBottomSheet
+##### 역할
+- 대한항공 결제 전 안내 메시지를 보여주는 BottomSheetDialog
+- 사용자에게 결제 유의사항을 강조된 텍스트 스타일로 안내하고 확인 시 onPayment 콜백을 실행하여 결제 프로세스를 진행
+- Android 버전에 따라 TypefaceSpan 또는 커스텀 MetricAffectingSpan을 적용하여 텍스트 폰트 스타일링 처리
+
+#### payment.ALPaymentActivity
+##### 역할
+- 항공 결제 프로세스 전체를 담당하는 Activity
+- 결제 수단 선택, 약관 동의, 카드 선택 및 등록, 결제 방식(일반과 이지페이) 처리
+- 대한항공 결제 시 별도 가이드 바텀시트 제공
+- 결제 성공와 실패 여부에 따라 ALPaymentSuccessActivity로 전환
+- 카드 등록 및 결제 시 외부 WebView 및 TransKey 암호 키패드와 연동
+- ViewModel과 데이터 바인딩, 각종 Observer를 통해 UI 상태를 실시간 반영
+
+#### payment.ALPaymentViewModel
+##### 역할
+- AL 항공권 결제 전용 액티비티
+- 결제 방법 선택(일반 결제와 이지페이) 및 카드 선택과 등록을 처리함
+- 약관 동의, 결제 가능 체크, 운임 규정 확인, 할부 설정과 같은 결제 관련 모든 UI 및 로직을 담당
+- 대한항공 결제의 경우 전용 안내 바텀시트를 표시하고 분기 처리
+- ALPaymentViewModel과 연동하여 결제 상태를 관찰하고 결제 성공과 실패 시 다음 화면으로 이동
+- 외부 WebView(카드 등록, 일반 결제) 및 TransKey 암호화 키패드와 연동
+- 백버튼 및 액션바 이벤트를 통해 예약 취소 안내 다이얼로그 표시
+
+## al.ui.paymentsuccess
+### Codes
+#### paymentsuccess.adapter.ALFareDetailForPaymentSuccessAdapter
+##### 역할
+- 결제 성공 화면에서 여정별과 승객별 운임 상세 정보를 RecyclerView에 표시하는 어댑터
+- ALAppFareInfo 리스트를 기반으로 실제 요금, 할인 금액, 총 합계을 계산하여 UI에 반영
+- 여정1과 여정2 구분 및 성인, 소아, 유아와 같은 승객 타입에 따른 텍스트 설정
+- 할인 항목(항공운임, 공항세, 유류할증료, 발권수수료)이 존재하는 경우에만 해당 UI를 표시
+- 마지막 아이템의 경우 전체 여정 총 결제 금액(viewModel.totalTravelFare)을 하단에 노출
+
+#### paymentsuccess.bottomsheet.ALFareDetailForPaymentSuccessBottomSheet
+##### 역할
+- 항공 결제 성공 화면에서 여정별 요금 상세 정보를 바텀시트 형태로 보여주는 UI 컴포넌트
+- ALPaymentSuccessViewModel에서 받은 운임 정보를 ALFareDetailForPaymentSuccessAdapter를 통해 바인딩
+- BottomSheetBehavior를 이용해 STATE_COLLAPSED 상태에서 60% 화면 비율로 보이도록 설정
+- 유저가 바텀시트를 스와이프할 경우 아래 여백 영역 높이를 실시간으로 조정해 부드러운 UX 제공
+- 확인 버튼 클릭 시 바텀시트 종료
+
+#### paymentsuccess.ALPaymentSuccessActivity
+##### 역할
+- 결제 완료 후 결과(성공과 실패)를 보여주는 화면을 구성하는 액티비티
+- 결제 성공 여부에 따라 서로 다른 UI, 메시지, 광고 배너, 알림을 설정
+- 결제 성공 시 성공 이미지 및 메시지 출력, 운임 상세 정보 버튼 및 배너 표시, 마케팅 알림 동의 바텀시트 호출, Braze와 Airbridge 추적 정보 전송
+- 결제 실패 시 실패 이미지 및 메시지 출력, 실패 사유가 존재할 경우 UI에 표시
+- 프로모션 배너 이미지를 Glide로 비동기 로딩하고 클릭 시 외부 링크 이동
+- 뒤로가기 시 메인 화면으로 이동하도록 콜백 오버라이드
+
+#### paymentsuccess.ALPaymentSuccessViewModel
+##### 역할
+- 항공권 결제 성공 화면을 위한 상태 관리 및 데이터 가공 로직을 담당하는 ViewModel
+- ALGlobalData로부터 여정 및 탑승객 데이터를 받아 LiveData로 가공해 UI에 제공
+##### 기능 상세 설명
+| 기능 | 설명 |
+|------|------|
+| 금액 계산 (travelAmount) | 여정별 탑승객 운임 정보를 합산하여 총 운임 계산 및 포맷 적용 |
+| 탑승객 정보 구성 (travelPassenger) | 탑승객 수, 좌석 타입과 같은 정보를 문자열로 구성 |
+| 요금 상세 정보 리스트화 (getAllFareInfoList) | ALAppFareInfo 리스트로 여정1과 여정2 요금 및 인원별 요금 세부 정보 구성 |
+| 즐겨찾기 동기화 (getBookmarkList, onBookmarkClick) | 즐겨찾기 여부 확인 및 추가와 삭제 기능 |
+| 수하물 정보 정리 (setBaggageInfo) | 여정별 무료 수하물 정보 정리 및 문자열 구성 |
+| 프로모션 배너 불러오기 (callPromotionBanner) | 결제 성공 화면의 광고 배너 API 호출 |
+| 추적 정보 전송 (sendBrazeAirbridge) | Braze, Airbridge에 탑승지와 도착지, 금액, 탑승일 정보 전송 |
+| 원가 요금 조회 (getFirstOriginFare, getSecondOriginFare) | 탑승객 타입별 원 운임 정보 반환 - 할인 전 가격 대비 목적 |
+| 서비스 연동 (linkService) | 항공 연동 서비스 등록 여부 확인 및 처리 |
+
+## al.ui.reservationcancel
+### Codes
+#### reservationcancel.bottomsheet.ALAdvanceCheckInGuideBottomSheet
+##### 역할
+- 사전 체크인 관련 안내 메시지를 하단 바텀시트 형태로 보여주는 UI 컴포넌트
+- 사용자에게 안내 메시지와 함께 확인 또는 취소 선택을 받을 수 있도록 양방향 버튼 제공
+- 각 버튼 클릭 시 전달받은 콜백 함수를 실행하고 바텀시트를 닫는 구조
+- 체크인 유무에 따른 사용자 선택을 유도
+
+#### reservationcancel.ALReservationCancelActivity
+##### 역할
+- 항공 예약 취소를 위한 UI와 로직을 담당
+- ViewModel로부터 전달받은 운임 규정 정보 리스트를 RecyclerView에 바인딩하여 사용자에게 제공  
+- 사전 체크인이 완료된 경우 안내 바텀시트를 통해 추가 안내 및 웹 브라우저 연결 기능 제공  
+- 예약 취소 진행 시 AlertDialog 또는 다음 화면으로 이동하는 분기 처리 수행  
+- 체크박스를 통해 사용자 동의를 받고 확인 버튼을 활성화
+
+#### reservationcancel.ALReservationCancelViewModel
+##### 역할
+- 항공 예약 취소 화면의 데이터 처리 및 비즈니스 로직을 담당하는 ViewModel
+- 예약 상세 정보 및 취소 사유와 운임 정보를 초기화하고 LiveData로 UI에 전달
+- 즐겨찾기 등록 여부 확인 및 추가와 삭제 기능 제공
+- 예약 취소 요청 시 ALReservationCancelRequest를 구성하여 서버에 전달하고 결과에 따라 다음 단계 분기 처리
+- 사전 체크인 완료된 예약에 대해서는 별도의 URL(웹뷰) 안내를 위한 이벤트 발생 처리 포함
+- 성인, 소아, 유아별 운임 금액 계산 및 UI에 전달
+
+## al.ui.reservationcancelbyreason
+### Codes
+#### reservationcancelbyreason.adapter.ALReservationCancelGuideAdapter
+##### 역할
+- 항공 예약 취소 사유에 따른 안내 문구들을 RecyclerView로 표시하는 어댑터
+- 첫 번째 항목에만 타이틀을 표시하고 이후 항목에는 숨기는 방식으로 UI 구성
+- CharSequence로 전달된 안내 문구 리스트를 순차적으로 바인딩하여 텍스트뷰에 출력
+- 뷰 홀더 내부에서 타이틀과 설명을 동시에 설정
+
+#### reservationcancelbyreason.ALReservationCancelByReasonActivity
+##### 역할
+- 항공 예약 취소 사유에 따라 사용자에게 안내 문구를 제공하는 화면
+- Intent에서 사유 코드를 받아 해당 사유에 맞는 안내 리스트를 구성하고 RecyclerView에 바인딩
+- 특정 텍스트에 색상 강조 및 굵기를 적용하여 시각적으로 강조된 메시지 제공
+- 체크박스 동의 여부에 따라 취소 요청 버튼 활성화
+- 예약 취소 요청이 완료되면 AlertDialog로 완료 안내 후 예약 관련 액티비티 스택 종료
+
+#### reservationcancelbyreason.ALReservationCancelByReasonViewModel
+##### 역할
+- 항공 예약 취소 사유가 있는 경우 해당 사유에 따라 서버에 취소 요청을 보내는 ViewModel
+- 예약 상세 정보와 취소 사유 코드를 Intent로부터 전달받아 내부 변수로 저장
+- 예약 취소 버튼 클릭 시 ALReservationCancelByReasonRequest 객체를 구성하여 서버에 API 요청 수행
+- 예약 취소 완료 시 LiveData 이벤트를 통해 UI에 알리고 여정 동기화를 위한 MJManager.syncMyJourneyWithServer() 호출
+
+## al.ui.reservationdetail
+### Codes
+#### reservationdetail.adapter.ALCancelReasonAdapter
+##### 역할
+- 예약 상세 화면에서 취소 사유 선택을 위한 RecyclerView 어댑터
+- ALBaseCodeInfoModel.Code 리스트를 받아 각 항목의 codeName을 UI에 표시
+- 항목 클릭 시 전달받은 onItemClick 콜백을 통해 선택된 사유를 외부로 전달
+- 사용자 선택 이벤트를 처리하기 위해 각 아이템에 click 확장 함수 적용
+
+#### reservationdetail.adapter.ALFareDetailForReservationAdapter
+##### 역할
+- 항공 예약 상세 화면에서 승객별 운임 정보를 표시하는 RecyclerView 어댑터
+- ALAppFareInfo 리스트를 기반으로 항공 운임, 공항세, 유류할증료, 발권수수료, 총 합계를 표시
+- 성인, 소아, 유아 구분에 따른 타입별 텍스트를 설정하고 이름 및 운임 정보를 바인딩
+- 리스트의 마지막 아이템일 경우 ViewModel에서 전달된 총 결제 금액을 하단에 표시
+- 여정 시작 여부(isFirstIndex)에 따라 구분선과 타이틀 표시 여부를 조정
+
+#### reservationdetail.adapter.ALPassengerInfoAdapter
+##### 역할
+- 예약 상세 화면에서 탑승객의 정보를 RecyclerView 형태로 보여주는 어댑터
+- 성명, 국적, 생년월일, 성별 정보를 ALReservationCompleteDetailModel.PassengerInfo로부터 바인딩
+- 생년월일은 yyyy-MM-dd 포맷 문자열을 파싱 후 사용자 친화적인 형태로 변환하여 표시
+- 성별은 M과 F 값을 성별 문자열로 매핑하여 출력
+
+#### reservationdetail.bottomsheet.ALCancelReasonSelectBottomSheet
+##### 역할
+- 항공 예약 취소 사유를 선택할 수 있도록 제공하는 바텀시트 UI 컴포넌트
+- 항공사 코드에 따라 코로나 관련 취소 사유 항목을 포함 여부를 조건부로 결정
+- 사용자 선택 시 콜백으로 선택된 사유 데이터를 전달하고 바텀시트 종료
+- 유의사항 텍스트 클릭 시 별도 안내 바텀시트(ALReservationCancelNoticeBottomSheet) 호출
+
+#### reservationdetail.bottomsheet.ALFareDetailForReservationBottomSheet
+##### 역할
+- 예약 상세 화면에서 여정별 및 승객별 운임 정보를 바텀시트 형태로 보여주는 UI 컴포넌트
+- RecyclerView를 통해 ALFareDetailForReservationAdapter를 활용하여 요금 항목 리스트 표시
+- BottomSheetBehavior를 사용해 1:0.6 비율로 노출되며 slideOffset에 따라 하단 여백(vDummy) 높이를 동적으로 조절
+- 버튼 클릭 시 바텀시트를 종료
+
+#### reservationdetail.bottomsheet.ALReservationCancelNoticeBottomSheet
+##### 역할
+- 항공 예약 취소 시 유의사항을 안내하는 바텀시트 UI 컴포넌트
+- 확인 버튼(btnConfirm) 클릭 시 바텀시트 종료
+
+#### reservationdetail.ALReservationDetailActivity
+##### 역할
+- 항공 예약 상세 정보를 표시하는 화면으로, 예약 상태, 승객 정보, 운임 정보를 전반적으로 확인 가능
+- 예약 상세 정보 초기화 및 관리를 위한 ALReservationDetailViewModel과 연동
+- 예약 취소 사유 선택, 운임 상세 보기, 운임규정 조회, 배너 링크 이동의 다양한 사용자 반응을 처리
+- 예매 취소 사유 코드(NS - 일반 예매 취소, DC - 결항 및 지연 취소, CI - 코로나19 취소)에 따라 일반 예매 취소 화면 또는 사유 기반 예매 취소 화면으로 분기
+- 예약 상태 코드가 변경된 경우 결과 코드 설정 후 종료하여 예약 리스트 리프레시
+- Glide를 활용한 광고 배너 이미지 로딩 및 접근성(contentDescription) 설정
+
+#### reservationdetail.ALReservationDetailViewModel
+##### 역할
+- 항공 예약 상세 화면의 데이터 로직을 담당하는 ViewModel
+- 예약 상세 정보, 배너, 즐겨찾기 여부와 같은 다양한 UI 상태를 LiveData로 관리
+- 예약 번호 기반 예약 상세 정보 및 프로모션 배너 동시 조회 및 초기화 처리
+- 운임 정보 리스트 계산 및 탑승객 운임 총액, 취소 금액, 취소 수수료 계산
+- 운임규정 정보가 있으면 바로 이동하고 없으면 비동기 조회 후 화면 전환 유도
+- 예약 상태와 도착 시간에 따라 취소 가능 여부 판단 및 예약 취소 버튼 노출 제어
+- 즐겨찾기 목록 불러오기 및 즐겨찾기 추가와 삭제 처리
+
+## al.ui.searchloading
+### Codes
+#### searchloading.ALSearchLoadingActivity
+##### 역할
+- 항공편 검색 후 로딩 애니메이션을 보여주는 액티비티
+- ViewModel의 onNextStep 이벤트를 관찰하여 결과 화면인 ALTravelListActivity로 이동
+- 뒤로가기 버튼 설정 및 결과 반환 처리
+- ALTravelListActivity에서 돌아왔을 때 예약 리스트 갱신 여부에 따라 결과 코드 설정 후 종료
+
+#### searchloading.ALSearchLoadingViewModel
+##### 역할
+- 항공편 검색 요청을 수행하는 ViewModel
+- ALGlobalData.journeyInfo의 여정 정보와 승객 정보를 바탕으로 ALTravelListRequest 구성
+- 왕복, 편도, 다구간 여부에 따라 여정 정보를 다르게 설정
+- travelRepository를 통해 항공편 조회 API 호출
+- 조회 성공 시 ALGlobalData.travelInfo에 결과 저장 후 onNextStep 이벤트 발생시켜 화면 전환 유도
+
+## al.ui.summary
+### Codes
+#### summary.adapter.ALFareDetailForSummaryAdapter
+##### 역할
+- 여정 요약 화면에서 탑승객별 상세 운임 정보를 표시하는 RecyclerView Adapter
+- 각 여정 및 탑승객 타입에 따른 운임 구성 요소(운임, 공항세, 유류할증료, 발권 수수료)를 ViewModel에서 조회하여 바인딩
+- 첫 번째 여정 여부, 탑승객 인덱스를 기반으로 타이틀 및 구분선 출력 제어
+- 마지막 아이템일 경우 총 결제 금액도 함께 표시
+
+#### summary.adapter.ALFreeBaggageAdapter
+##### 역할
+- 여정 요약 화면에서 무료 수하물 정보를 표시하는 RecyclerView Adapter
+- ALTravelListModel.FreeBaggage 데이터를 기반으로 수하물 서비스 이름, 수치, 단위를 조합해 항목별 텍스트로 바인딩
+- 수하물 단위명은 글로벌 코드 리스트(ALGlobalData.unitList)에서 조회하여 출력
+
+#### summary.bottomsheet.ALFareDetailForSummaryBottomSheet
+##### 역할
+- 여정 요약 화면에서 운임 상세 정보를 보여주는 BottomSheet
+- BottomSheetBehavior의 COLLAPSED를 활용해 반쯤 펼쳐진 상태처럼 보이도록 설정
+- 슬라이드 이벤트에 따라 바텀시트 내부 더미 뷰(vDummy)의 높이를 조정해 하단 위치를 유지
+- ViewModel에서 가져온 운임 정보 리스트를 어댑터에 연결하여 RecyclerView로 출력
+- 확인 버튼 클릭 시 바텀시트 닫기 동작 수행
+
+#### summary.ALSummaryActivity
+##### 역할
+- 항공 여정 요약 화면을 구성하는 Activity
+- 탑승 정보, 운임 규정, 운임 상세 바텀시트를 표시하고 사용자 이벤트를 처리
+- 뒤로가기 또는 UI에서 가는편과 오는편 재선택 시 알림 다이얼로그를 통해 확인 후 종료 또는 재검색 처리
+- 운임 규정 클릭 시 ViewModel에서 규정 정보를 조회한 후 ALFareRulesActivity로 이동
+- 운임 상세 보기 클릭 시 ALFareDetailForSummaryBottomSheet 표시
+- 탑승객 정보 입력 버튼 클릭 시 ALPassengerInfoInputActivity로 이동
+
+#### summary.ALSummaryViewModel
+##### 역할
+- 여정 정보, 운임 규정, 운임 총액, 탑승객 정보, 수하물 정보의 요약 데이터를 관리하는 ViewModel
+- ALGlobalData에서 여정 및 운임 데이터를 불러와 LiveData로 바인딩
+- 총 운임 계산 및 포맷팅 처리 (totalFare)
+- 편도, 왕복, 다구간 여정의 탑승객별 운임 정보를 리스트로 생성 (getAllFareInfoList)
+- 각 여정의 운임 규정 정보 조회 (getFareRule)
+- 탑승객 인원 및 좌석 타입에 따른 텍스트 설정 (travelPassenger)
+- 각 여정에 포함된 무료 수하물 정보를 문자열로 저장 (setBaggageInfo)
+- 여정 내 승객 타입(성인, 소아, 유아)에 따른 요금 정보 제공 (getFirstOriginFare, getSecondOriginFare)
+
+## al.ui.travellist
+### Codes
+#### travellist.adapter.ALTravelDateSelectAdapter
+##### 역할
+- 여정 날짜 선택 UI를 구성하는 RecyclerView.Adapter
+- 사용자가 선택 가능한 날짜 리스트를 전달받아 각 날짜를 리스트로 렌더링
+- 선택된 날짜를 기준으로 스타일을 동적으로 변경 (선택 날짜는 Bold, 배경 색상 변경)
+- 날짜 클릭 시 onItemClick(Calendar) 콜백 호출 후 선택 상태 갱신 (notifyDataSetChanged)
+- 내부적으로 날짜 포맷 변환을 위해 displayDatePattern2, yyyyMMddPattern와 같은 확장 함수 사용
+
+#### travellist.adapter.ALTravelFilterAirlineListAdapter
+##### 역할
+- 항공사 필터링 리스트를 위한 RecyclerView Adapter
+- 항공사 목록을 체크박스 형태로 표시
+- 각 항목의 체크 상태(isChecked)는 ALBaseCodeInfoModel.Code의 isChecked 필드를 사용해 초기화 및 갱신
+- 체크 변경 이벤트 발생 시 onChecked 콜백 호출
+- 접근성 이벤트 대응 - TYPE_VIEW_CLICKED 이벤트를 수신하면 상태 동기화
+
+#### al.ui.travellist.adapter.ALTravelListAdapter  
+##### 역할  
+- 항공편 리스트 화면을 구성하는 RecyclerView Adapter  
+- ALTravelListModel.Travel 리스트 데이터를 받아 각 항목을 렌더링  
+- 항공사 로고, 항공편명, 출도착 시간, 비행시간, 좌석 정보, 요금의 UI 바인딩 처리  
+- Glide를 이용해 항공사 로고를 이미지뷰에 로딩
+- 공동운항 여부에 따라 각각의 UI 컴포넌트 제어  
+- bookingClassType 값에 따라 일반, 할인, 특가 스타일 적용  
+- cabinClass 값이 일반석이 아닌 경우 좌석명을 표시  
+- 사용자가 항공편 항목을 클릭하면 onItemClick 콜백을 통해 이벤트 전달  
+- 항공요금은 wonFormat 함수로 형식화하여 표시  
+- 출도착 시간은 hhmmPattern 확장 함수를 사용해 시:분 형태로 포맷팅  
+- 항공사 코드와 항공편 번호를 결합해 항공편명을 생성
+
+#### al.ui.travellist.adapter.ALTravelSortAdapter  
+##### 역할  
+- 항공편 정렬 기준을 표시하는 RecyclerView Adapter  
+- sortList로 전달받은 문자열 리스트 생성
+- 선택된 항목은 글자 색상, 배경색, 폰트를 다르게 적용하고 체크 이미지 표시  
+- 비선택 항목은 일반 스타일로 렌더링  
+- clSpinnerContainer에 접근성 속성(accessibilityDelegate)을 설정해 스크린 리더가 선택 여부를 인식 가능하도록 처리  
+- 사용자 클릭 시 onItemClick 콜백을 통해 항목 문자열과 위치(adapterPosition) 전달
+
+#### al.ui.travellist.bottomsheet.ALNumberPickerBottomSheet  
+##### 역할  
+- 사용자가 금액을 선택할 수 있도록 NumberPicker 형태로 구성된 BottomSheetDialogFragment  
+- 타이틀, 현재 금액, 시작 금액, 종료 금액, 증가 단위를 인자로 전달받아 숫자 목록을 생성  
+- 생성된 숫자 리스트는 통화 포맷(###,###)을 적용해 화면에 표시  
+- 선택된 금액은 currentAmount() 함수로 가져오며 confirm 버튼을 눌렀을 때 콜백으로 전달됨  
+- confirm 버튼은 유효한 범위 내 금액을 선택한 경우에만 활성화  
+- 접근성 대응을 위해 NumberPicker 값 변경 시 contentDescription을 업데이트하고 이벤트를 강제로 전송  
+- confirm 버튼, close 버튼 클릭 시 각각 콜백 호출 또는 BottomSheet 종료 처리  
+- 금액 문자열을 Int로 변환하기 위해 fromDecimalToIntOrNull 함수 사용  
+
+#### al.ui.travellist.bottomsheet.ALTimePickerBottomSheet  
+##### 역할  
+- 사용자가 시간을 선택할 수 있도록 시 및 분 단위 NumberPicker를 제공하는 BottomSheetDialogFragment
+- 시작 시간과 종료 시간 범위 내에서 선택 가능한 시각 데이터를 동적으로 생성
+- 시는 createHourArray 함수에서 2자리 문자열 리스트로 생성  
+- 분은 고정된 7단계(00, 10, 20, 30, 40, 50, 59)로 구성됨  
+- currentTime을 기반으로 초기 선택 값을 설정하고 사용자 변경 시 contentDescription과 접근성 이벤트 전송  
+- 선택된 시각 값은 currentHour, currentMinute 함수로 추출하여 콜백에 전달  
+- 유효한 시간 범위 내에 있을 경우에만 확인 버튼 활성화 및 접근성 문자열 업데이트  
+- 확인 버튼 클릭 시 선택된 시간(hour, minute)을 콜백으로 전달하고 BottomSheet 종료  
+- companion object의 newInstance를 통해 제목, 현재 시간, 시작/종료 시간 인자를 넘겨 동적 생성  
+
+
+#### al.ui.travellist.bottomsheet.ALTravelFilterBottomSheet
+##### 역할
+- 항공편 검색 시 적용할 필터 조건(항공사, 출발 시간, 운임 가격)을 설정하는 BottomSheetDialogFragment
+- 항공사 필터링
+  - ALGlobalData.airlineList 기반으로 체크박스 리스트 생성
+  - 선택 상태는 ViewModel의 getTravelFilter().airlineList 값과 동기화
+  - 전체 선택 체크박스를 통해 전체 항목 상태 일괄 변경
+  - 접근성 이벤트(TYPE_VIEW_CLICKED) 발생 시 상태를 업데이트하여 스크린 리더 지원
+- 출발 시간 필터링
+  - 시작/종료 시간 선택 UI 제공 (ALTimePickerBottomSheet 호출)
+  - 선택된 시간은 HH:mm 형식으로 표시 및 contentDescription 업데이트
+  - ViewModel의 임시 값(tempFilterStartTime, tempFilterEndTime)과 동기화
+- 운임 가격 필터링
+  - 시작/종료 금액 선택 UI 제공 (ALNumberPickerBottomSheet 호출)
+  - 선택된 금액은 통화 형식(###,###)으로 표시 및 contentDescription 업데이트
+  - ViewModel의 임시 값(tempFilterStartAmount, tempFilterEndAmount)과 동기화
+- 초기화 기능
+  - lInit 클릭 시 모든 항공사 선택, 시간/금액 범위를 기본값으로 재설정
+- 적용하기 버튼
+  - 선택된 필터 조건을 ViewModel에 저장(setTravelFilter)하고 BottomSheet 닫기
+- UI 및 접근성
+  - BottomSheet 초기 상태를 확장 모드로 설정, 상단 여백 조절
+  - GridLayoutManager(2열)로 항공사 목록 표시
+  - 선택 값 변경 시 버튼 활성고ㅏ 활성 상태 갱신
+
+#### al.ui.travellist.bottomsheet.ALTravelSortBottomSheet
+##### 역할
+- 항공편 리스트의 정렬 기준을 선택하는 BottomSheetDialogFragment
+- 정렬 기준 목록은 문자열 리소스에서 불러와 RecyclerView로 표시 (ALTravelSortAdapter 사용)
+- 현재 선택된 정렬 타입은 ViewModel의 currentSortedType을 기반으로 표시
+- 사용자가 항목을 클릭하면 선택된 정렬 기준과 위치를 onItemClick 콜백으로 전달 후 BottomSheet 종료
+- 닫기 버튼(ivClose) 클릭 시 BottomSheet 종료
+- BottomSheet 초기 상태를 확장 모드로 설정하고 접힘 상태를 건너뛰도록 구성
+
+#### al.ui.travellist.ALTravelListActivity
+##### 역할
+- 항공편 여정 목록 화면의 메인 액티비티
+- ViewModel 바인딩 및 뒤로가기 콜백 등록, 액션바 뒤로가기 처리
+- 정렬 바텀시트(ALTravelSortBottomSheet) 호출 및 선택 결과로 리스트 정렬 실행
+- 필터 바텀시트(ALTravelFilterBottomSheet) 호출로 항공사 조건, 시간 조건, 운임 조건 설정
+- 조건 변경 트리거(tvChange1, tvChange2, llConditionChange) 클릭 시 재선택 경고 AlertDialog 노출 후 흐름 분기
+- selectFirstTravel 관찰
+  - 출도착 시간(hhmmPattern), 총 운임(wonFormat) UI 반영 및 접근성(contentDescription) 세팅
+  - 재선택 포커스 안내(focusTalkBack)
+- nearDateList 관찰
+  - ALTravelDateSelectAdapter로 날짜 리스트 표시 및 선택 시 재조회(requestTravelList)
+  - 선택 기준일과 동일한 날짜 인덱스를 가운데 정렬(setCenterToPosition)
+- travelList 관찰
+  - Lottie 로딩 애니메이션 정리 후 ALTravelListAdapter로 항목 표시
+  - 항목 클릭 시 로그인 여부 체크, 미로그인 시 로그인 플로우 호출(TGoLoginManager)
+- onNextStep(Event) 관찰
+  - ALSummaryActivity로 이동(startActivityForResult, REQ_CODE_SUMMARY)
+- 결과 처리(onActivityResult)
+  - 요약 화면 완료 시 재선택 코드 처리(가는편과 오는편) 또는 종료 흐름
+- finishAndLoginCheck
+  - 직전 로그인 시도 후 로그인 성공 상태라면 예약 목록 갱신 코드 setResult 전달
+  - 액티비티 종료
+- 기타
+  - ViewModel 인스턴스 팩토리로 생성 및 액티비티 범위 공유
+  - 클릭 편의 확장(click, clicks) 사용으로 View 바인딩 간결화
+
+#### al.ui.travellist.ALTravelListViewModel
+##### 역할
+- 항공편 여정 목록 화면(ALTravelListActivity)의 ViewModel
+- ALGlobalData에 저장된 여정 정보와 검색 결과를 기반으로 화면 상태 관리
+- LiveData 관리
+  - journeyInfo: 현재 여정 정보
+  - travelList: 현재 표시 중인 항공편 리스트
+  - selectFirstTravel: 선택된 첫 번째 여정(가는편)
+  - onNextStep: 다음 단계 이동 이벤트
+  - isReSearching: 재조회 진행 여부
+  - nearDateList: 출발일 기준 ±5일의 날짜 리스트
+  - journeyTitle: 여정 단계별 제목
+- 여정 재조회(requestTravelList)
+  - 선택된 날짜를 여정 정보에 반영
+  - 여정 타입(왕복, 편도, 다구간)에 따라 요청 파라미터(ALTravelListRequest) 구성
+  - API 호출을 통해 항공편 리스트를 새로 불러오고 정렬·필터 적용 후 LiveData 갱신
+- setTravelNearDateList
+  - 현재 여정 단계와 조건에 따라 날짜 범위 계산 후 ±5일 리스트 생성
+- sortTravelList
+  - 전달받은 정렬 타입(currentSortedType)에 따라 항공편 리스트 재정렬
+- sortedList
+  - 출발 시간, 가격, 소요 시간 기준으로 리스트 정렬
+- filteredList
+  - 출발 시간 범위, 운임 가격 범위, 항공사 조건에 따라 리스트 필터링
+- setTravelInfo
+  - 편도: 선택 항공편 저장 후 다음 단계 이벤트 발생
+  - 왕복/다구간: 가는편 미선택 시 selectFirstTravel로 저장, 이미 선택된 경우 가는편·오는편 저장 후 다음 단계 이벤트 발생
+  - 선택 후 날짜 리스트 및 여정 제목 갱신
+- setJourneyTypeTitle
+  - 여정 타입 및 단계에 따라 상단 제목(journeyTitle) 갱신
+- onFirstReSelectClick
+  - 가는편 재선택 처리(첫 번째 여정 선택 해제 후 초기 리스트 재설정)
+- getTravelFilter와 setTravelFilter
+  - 현재 여정 단계에 해당하는 필터(ALAppTravelFilter) 반환·설정
+  - 설정된 필터 조건(출발 시간 범위, 운임 가격 범위, 항공사)에 따라 리스트 필터링
+- Factory
+  - ViewModelProvider.Factory 구현으로 ALProvider.travelRepository 주입
+
+#### al.util.TalkBackUtils
+##### 역할
+- TalkBack 관련 접근성 유틸리티 제공 객체
+- Context 확장 함수
+  - isTalkBackOn()
+    - 접근성 서비스가 활성화되고 터치 탐색이 켜져 있는지 여부 반환
+  - isTouchExplorationOn()
+    - 터치 탐색(Touch Exploration) 기능 활성 여부 반환
+- View 확장 함수
+  - focusTalkBack()
+    - View에 접근성 포커스를 주기 위해 TYPE_VIEW_FOCUSED 이벤트 전송 및 ACTION_ACCESSIBILITY_FOCUS 수행
+    - FragmentActivity의 lifecycleScope를 사용해 500ms 지연 후 실행
+  - sendTalkBack(afterView: View)
+    - 현재 View의 접근성 탐색 순서를 afterView 이전으로 설정(setAccessibilityTraversalBefore)
+
+#### al.util (displayDatePatternPair, plainString)
+##### 역할
+- displayDatePatternPair(calendar1, calendar2)
+  - 두 개의 Calendar 객체를 받아 yyyy.MM.dd 형식의 날짜 범위 문자열로 변환
+  - 두 인자가 null이면 빈 문자열 반환
+  - 날짜1 ~ 날짜2 형식으로 반환
+- plainString(encStr, length)
+  - 암호화된 문자열(encStr)을 복호화하여 반환
+  - TransKeyCipher(SEED 알고리즘) 사용
+  - Util.getSecureKey(false)로 보안 키를 생성 후 복호화 수행
+  - 복호화 성공 시 ByteArray에서 String으로 변환 후 원본 ByteArray를 초기화
+  - 복호화 실패 또는 예외 발생 시 빈 문자열 반환
+  - StringUtil.emptyIfNull로 null 안전 처리
+
+#### al.ALConstants
+##### 역할
+- 항공편 예약, 결제, 조회 등 AL 모듈 전역에서 사용하는 상수 정의 객체
+- SharedPreferences 키 상수
+  - PREF_AL_BASE_DATA_LAST_DATE, PREF_AL_LAST_PAYMENT_METHOD 등
+- 기본값 상수
+  - DEFAULT_BASE_DATA_LAST_DATE (yyyyMMddhhmmss 형식)
+- URL 상수
+  - EASY_PAY_URL: 간편 결제 요청 웹뷰 URL(BuildConfig.TIA_TR_URL 기반)
+- Intent Extra Key 상수
+  - 항공편 규정, 승객 정보, 여정 상태, 예약 상세, 결제 관련 데이터 전달 키(EXTRA_KEY_...)
+- 결제 파라미터 상수
+  - EASY_PAY_PARAM_RESULT, EASY_PAY_PARAM_ENCRYPT_DATA 등
+- 코드 그룹명 상수
+  - 항공사 코드 그룹명(BASE_INFO_AIRLINE_CODE_GROUP_NAME) 등 코드 조회에 사용되는 그룹 식별자
+- 요청 코드 상수
+  - REQ_CODE_SUMMARY, REQ_CODE_TRAVEL_LIST 등 startActivityForResult 호출 시 구분자
+- 결과 코드 상수
+  - RES_CODE_FIRST_RE_SELECT, RES_CODE_IS_REFRESH_RESERVATION_LIST 등 Activity 결과 처리용
+- 에러 코드 상수
+  - ERROR_CODE_TS424: 특정 오류 식별 코드
+
+#### al.ALGlobalData
+##### 역할
+- AL 모듈 전역에서 공유되는 항공편 예약과 조회 관련 전역 데이터 저장 객체(Singleton)
+- 공통 코드·기본 데이터
+  - airportList: 공항 리스트
+  - airlineList: 항공사 리스트
+  - nationalityList: 국적 리스트
+  - seatList: 좌석 리스트
+  - paxTypeList: 승객 구분 코드 리스트
+  - unitList: 서비스 단위 리스트
+  - genderList: 성별 리스트
+  - cancelReasonList: 취소 사유 리스트
+  - airlineLogoBaseUrl: 항공사 로고 Base URL
+- 여정과 예약 관련 데이터
+  - journeyInfo: 사용자가 입력한 여정 정보(ALAppJourneyInfo)
+  - travelInfo: 여정 조회 결과(ALTravelListModel)
+  - firstTravelInfo: 선택된 가는편 항공편 정보
+  - secondTravelInfo: 선택된 오는편 항공편 정보(왕복 시)
+  - reservationInfo: 예약 요청 정보(ALReservationRequest)
+- 데이터 초기화 메서드
+  - clear(): 전체 데이터 초기화(기본 데이터, 여정 데이터, 기타 데이터 모두 초기화)
+  - clearBaseData(): 공항, 항공사, 코드 리스트 및 로고 URL 초기화
+  - clearJourneyData(): 여정 정보 초기화
+  - clearEtcData(): 여정 정보, 조회 결과, 선택 항공편, 예약 정보 초기화
