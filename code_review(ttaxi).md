@@ -169,3 +169,56 @@
   - 드라이버 평가 키 여부에 따라 마지막 호출 ID 초기화
   - 출발지, 도착지, 택시 타입, 호출 위치 등의 마지막 정보 초기화
   - RouteSearchDataStore의 현재 경로 null로 초기화
+
+#### ttaxt.app.historydetail.TaxiHistoryDetailFragment
+##### 역할
+- 택시 호출 내역 상세 화면의 UI 및 사용자 상호작용 처리
+- TaxiHistoryDetailViewModel과 DataBinding을 사용하여 데이터 표시 및 이벤트 처리
+- 주요 기능
+  - newInstance(callID, taxiType, isGetOff): 호출 ID, 택시 타입, 하차 여부를 인자로 Bundle에 담아 Fragment 생성
+  - onCreateView
+    - FragmentTaxiHistoryDetailBinding을 통해 레이아웃과 바인딩
+    - ViewModel 초기화 및 어댑터(TaxiHistoryDetailAdapter) 설정
+  - onViewCreated
+    - LiveData 옵저빙 설정(observe())
+    - 전달받은 인자 로드(loadArguments)
+    - 화면 초기화(init) 및 데이터 요청(viewModel.requestHistory)
+  - observe()
+    - networkState: 네트워크 오류 시 showNetworkError 호출
+    - toastMsg: 토스트 메시지 표시
+    - showDriverEvaluation: 기사 평가 다이얼로그 표시
+    - receivableData: 미납 요금 화면(TaxiUnpaidFeeActivity) 이동 후 액티비티 종료
+    - showPayAmount: 금액 표시 여부 어댑터에 전달
+  - 즐겨찾기 기능
+    - favoritesButton(): 내 호출이면 삭제, 아니면 추가 다이얼로그 표시
+    - favoriteAddDialog(): 즐겨찾기 추가 확인 다이얼로그
+  - 공유 기능
+    - shareButton(): 현재 화면의 영수증 이미지를 캡처하여 공유 인텐트 실행
+  - 미납 결제
+    - unPaidPaymentButton(): UnpaidChargeActivity 호출
+  - 기사 평가
+    - showDriverEvaluation(): TaxiDriverEvaluationDialogFragment 호출 및 평가 데이터 전송
+  - 기사 호출
+    - driverCall(): 기사에게 전화 걸기 확인 다이얼로그
+  - 영수증 저장
+    - showReceipt(): 저장 권한 체크 후 이미지 저장
+    - saveReceipt(): View를 이미지로 저장 (Android Q 이상은 MediaStore 사용, 이하 버전은 FileOutputStream 사용)
+    - getImageUri2(): binding.useinfolayout을 Bitmap으로 변환 후 저장, 저장 성공 시 URI 반환
+    - getBitmapFromView(view): View를 Bitmap으로 변환
+  - 권한 처리
+    - checkWritePermission(): 저장소 쓰기 권한 여부 확인
+    - requestWritePermission(requestCode): 저장소 쓰기 권한 요청
+  - 네트워크 오류 다이얼로그
+    - showNetworkError(): AlertDialogFragment로 네트워크 오류 안내
+  - 기타
+    - onBackPressed(): 항상 false 반환 (Activity에서 처리)
+    - onActivityResult(): 미납 결제 성공 시 내역 재요청
+
+#### ttaxt.app.historydetail.TaxiHistoryDetailViewModel
+##### 역할
+- 택시 호출 내역 상세 화면에서 View와 데이터 계층(API, Pref) 사이를 중개하는 ViewModel
+- 결제 영수증 조회, 미수금 처리, 운전자 평가 요청, 즐겨찾기(내 호출) 추가·삭제 기능을 제공
+- 네트워크 상태, 토스트 메시지, UI 표시 여부 등을 LiveData<Event>로 관리하여 화면 상태를 실시간으로 반영
+- 서버 응답 데이터(RMGetPaymentReceipt)를 가공하여 차량명, 결제 금액, 호출 유형(본인호출과 타인호출) 등에 맞춘 UI 제어 로직 수행
+- 호출 ID가 비숫자일 경우 API 호출에 맞게 보정 처리하며 택시 타입에 따른 전화 버튼 표시 여부를 결정
+
