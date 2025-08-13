@@ -222,3 +222,76 @@
 - 서버 응답 데이터(RMGetPaymentReceipt)를 가공하여 차량명, 결제 금액, 호출 유형(본인호출과 타인호출) 등에 맞춘 UI 제어 로직 수행
 - 호출 ID가 비숫자일 경우 API 호출에 맞게 보정 처리하며 택시 타입에 따른 전화 버튼 표시 여부를 결정
 
+#### ttaxi.app.intro.TaxiIntroActivity
+##### 역할
+- 택시 서비스 진입 시 초기 화면을 담당하는 Activity
+- 진입 유형(main과 route)에 따라 위치 확인, 온다 연동 체크, 결제수단 마이그레이션 후 다음 화면으로 이동
+- ViewModel 이벤트를 관찰해 팝업 표시, 결과 반환, 화면 종료 및 액티비티 전환을 수행
+- startMain, startRoute 등 다양한 정적 메서드로 main 또는 route 모드 진입 지원
+- 인텐트 데이터 추출 후 ViewModel과 Pref에 저장
+- 위치 서비스 활성화 및 현재 위치 획득 시 온다 서비스 연동 여부 확인
+- 팝업을 통한 결제수단 이관 여부 확인
+- main 모드일 경우 TaxiMainActivity, route 모드일 경우 TaxiRouteResultActivity로 이동
+
+#### ttaxi.app.intro.TaxiIntroViewModel
+##### 역할
+- 택시 온다 진입 로직을 담당하는 ViewModel
+- 서버 상태, 연동, 설정 조회 후 화면 전환 여부를 결정하고 Event(LiveData)로 Activity에 알림
+- 위치 정보, 진입 모드(main, route), 옵션(대화없이, 과속없이, 내비따라) 값을 보관하고 후속 API 호출에 활용
+- 온다 서버 점검, 미수금, 약관 재동의, 미연동 등 예외 상황을 분기 처리
+- 결제수단 마이그레이션 팝업 노출 및 사용자 선택에 따른 이관 API 호출
+- readConfig로 호출 옵션, 토스트, 배너, 쿠폰 등 환경 설정을 수신해 Pref에 저장
+- 연동 여부 확인(requestCallInfoGate) 후 메인 이동 또는 약관 동의 화면으로 유도
+- 중복 실행 방지를 위해 Event 래핑으로 단발성 UI 이벤트를 관리
+
+#### ttaxi.app.main.adapter.OnFavoriteButtonItemClickInterface
+##### 역할
+- 즐겨찾기 버튼 클릭 이벤트를 외부로 전달하기 위한 인터페이스
+- 어댑터에서 특정 아이템의 즐겨찾기 버튼이 눌렸을 때 해당 position을 콜백 메서드로 전달
+- Activity나 Fragment가 이 인터페이스를 구현해 클릭된 아이템의 즐겨찾기 상태를 변경하거나 관련 동작을 수행하도록 함
+
+#### ttaxi.app.main.adapter.TaxiFavoriteSelectAdapter
+##### 역할
+- 택시 즐겨찾기 선택 목록을 표시하는 RecyclerView 어댑터
+- TaxiFavoriteListItem 데이터를 기반으로 항목 이름, 아이콘, 즐겨찾기 상태를 UI에 반영
+- 즐겨찾기 버튼 클릭 시 OnFavoriteButtonItemClickInterface 콜백을 통해 클릭된 position을 외부로 전달
+- addItem, addAll 메서드로 데이터 추가 및 갱신 기능 제공
+- 항목 접근성을 위해 position과 상태에 따라 contentDescription을 설정
+
+#### ttaxi.app.main.adapter.TaxiSelectPhoneNumberAdapter
+##### 역할
+- 택시 호출 시 사용할 전화번호 유형을 선택하는 RecyclerView 어댑터
+- TaxiSelectPhoneNumberDialog.INPUT_TYPE 목록을 기반으로 항목을 표시하고 선택 상태를 시각적으로 반영
+- 선택된 항목은 폰트, 배경색, 글자색, 체크 아이콘 등으로 강조 표시
+- 특정 위치(3, 4번)에 해당하는 항목에는 승객 아이콘과 글자 크기 변경 적용
+- 항목 클릭 시 OnHandleRouteResultListener 콜백을 통해 선택된 position을 외부로 전달
+
+#### ttaxi.app.main.TaxiMainActivity
+##### 역할
+- 택시 서비스 메인 화면을 표시하는 Activity
+- TaxiMainFragment를 생성하여 메인 UI를 구성하고, 경로 및 주소 관련 데이터(RouteSearchDataStore)를 초기화
+- 프로모션 팝업 표시 여부를 인텐트로 전달받아 Fragment 생성 시 반영
+- onActivityResult를 Fragment로 전달하여 하위 화면에서 돌아온 결과 처리 지원
+- 뒤로가기 시 Firebase Analytics 이벤트(onda_main_back_click) 로그 기록
+- 정적 start 메서드로 애니메이션 여부와 프로모션 팝업 표시 여부를 제어하며 화면 진입 가능
+
+#### ttaxi.app.main.TaxiMainFragment
+##### 역할
+- 메인 지도 화면을 담당하는 BaseMapFragment
+- 카카오맵 초기화, 현재 위치 표시 및 주변 택시 마커 주기적 갱신(SearchTaxiTimer)q
+- 출발과 도착 주소 관찰로 다음 버튼 활성화 및 경로 결과 화면으로 이동(TaxiRouteResultActivity)
+- 메뉴 동작(내역, 쿠폰, 요청, 드로어 열기와 닫기) 처리 및 Firebase Analytics 로그 기록
+- 대신불러주기(타인 호출) 전화번호 선택 BottomSheet, 직접 입력과 연락처 입력 처리 및 최근 이력 저장
+- 집과 회사 즐겨찾기 처리 및 지도 목적지 선택 흐름 연동
+- 프로모션과 쿠폰 팝업 노출, 토스트와 네트워크 오류 안내 다이얼로그 표시
+- GPS 설정 변경 브로드캐스트 대응, 런타임 권한 요청, 생명주기별 타이머와 리시버 관리
+
+#### ttaxi.app.main.TaxiMainViewModel
+##### 역할
+- 메인 지도 화면의 상태를 관리하는 ViewModel
+- 집과 회사 즐겨찾기 보유 여부, 출발과 도착 주소, 다음 버튼 활성화 상태를 LiveData로 제공
+- 토스트 메시지와 주변 택시 목록(taxiList), 멀티콜 이용중 버튼 노출과 카운트 상태를 LiveData로 제공
+- 결제 영수증 조회(newGetPaymentReceipt)로 최근 결제 금액과 유형과 기사명 등을 Pref에 저장하고 평가 다이얼로그 트리거 지원
+- 기사 평가 전송(tGODriverEvaluationReq) API 호출 및 완료 상태 저장
+- 주변 택시 조회(requestSearchTaxi)로 지도에 표시할 택시 리스트 갱신
+- 멀티콜 이용 현황(requestCallsInUse) 조회로 이용중 버튼 표시 및 이용중 건수 반영
