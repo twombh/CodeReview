@@ -278,7 +278,7 @@
 #### ttaxi.app.main.TaxiMainFragment
 ##### 역할
 - 메인 지도 화면을 담당하는 BaseMapFragment
-- 카카오맵 초기화, 현재 위치 표시 및 주변 택시 마커 주기적 갱신(SearchTaxiTimer)q
+- 카카오맵 초기화, 현재 위치 표시 및 주변 택시 마커 주기적 갱신(SearchTaxiTimer)
 - 출발과 도착 주소 관찰로 다음 버튼 활성화 및 경로 결과 화면으로 이동(TaxiRouteResultActivity)
 - 메뉴 동작(내역, 쿠폰, 요청, 드로어 열기와 닫기) 처리 및 Firebase Analytics 로그 기록
 - 대신불러주기(타인 호출) 전화번호 선택 BottomSheet, 직접 입력과 연락처 입력 처리 및 최근 이력 저장
@@ -295,3 +295,86 @@
 - 기사 평가 전송(tGODriverEvaluationReq) API 호출 및 완료 상태 저장
 - 주변 택시 조회(requestSearchTaxi)로 지도에 표시할 택시 리스트 갱신
 - 멀티콜 이용 현황(requestCallsInUse) 조회로 이용중 버튼 표시 및 이용중 건수 반영
+
+#### ttaxi.app.multicall.TaxiMultiCallActivity
+##### 역할
+- 택시 멀티콜 기능을 제공하는 화면의 Activity
+- ActivityMultiCallBinding을 사용해 레이아웃과 데이터 바인딩 설정
+- 커스텀 액션바에서 뒤로가기 및 이용 내역(웹뷰) 버튼 동작 설정
+- TaxiMultiCallFragment를 생성하여 컨테이너에 추가
+- onBackPressed에서 프래그먼트 백스택 처리 후 루트 Activity 여부에 따라 종료 또는 기본 동작 수행
+- 정적 start 메서드로 외부에서 TaxiMultiCallActivity 실행 지원
+
+#### ttaxi.app.multicall.TaxiMultiCallAdapter
+##### 역할
+- 멀티콜 이용 내역을 표시하는 RecyclerView 어댑터
+- RMCallsInUse.CallInUse 데이터를 TaxiMultiCallItemViewHolder에 바인딩
+- 항목 클릭 시 OnMultiCallItemClickListener 콜백을 통해 클릭된 CallInUse 객체를 외부로 전달
+- ViewHolder 생성 시 TaxiMultiCallItemViewHolder.create 호출로 뷰 초기화
+
+#### ttaxi.app.multicall.TaxiMultiCallFragment
+##### 역할
+- 멀티콜 이용 내역 목록 화면을 표시하는 Fragment
+- ViewModel을 통해 멀티콜 내역을 조회하고 RecyclerView(TaxiMultiCallAdapter)에 바인딩
+- 취소된 호출 내역을 별도로 수집하여 전체 삭제 기능 제공(removeCallInUseAll)
+- 개별 항목 클릭 시 상태에 따라 호출 복원 또는 삭제 후 복원 처리(clickTaxiItem)
+- 호출 복원 시 호출 정보(callRepairString)를 파싱하여 RouteSearchDataStore와 TaxiPref에 출발지와 도착지, 결제·쿠폰·차량 정보 등을 저장
+- 호출 복원 후 TaxiRouteResultActivity로 이동하여 이전 호출 상태를 이어감
+- UI 상태(목록, 빈 화면, 삭제 버튼 표시) 제어 및 취소 리스트 초기화 로직 포함
+
+#### ttaxi.app.multicall.TaxiMultiCallItemViewHolder
+##### 역할
+- 멀티콜 이용 내역의 개별 항목 UI를 표시하고 데이터와 바인딩하는 ViewHolder
+- RMCallsInUse.CallInUse 객체의 택시 타입, 차량 번호, 출발·도착지, 결제 타입, 호출 상태, 불러주기 대상 정보를 뷰에 세팅
+- 결제 타입이 현장일 경우 텍스트 색상을 강조(#fa6a46)로 변경
+- 불러주기 대상이 본인인지 타인인지 구분하고 전화번호 형태일 경우 하이픈을 추가해 표시
+- 항목 클릭 시 OnMultiCallItemClickListener 콜백을 통해 클릭된 데이터 전달
+
+#### ttaxi.app.multicall.TaxiMultiCallViewModel
+##### 역할
+- 멀티콜 이용 내역 상태를 관리하는 ViewModel
+- callsInUse API 호출로 멀티콜 목록을 조회하여 LiveData로 제공
+- 응답에 포함된 프로모션 정보(promotionInfo)를 보관해 후속 화면에서 활용
+- 실패 콜백에서는 별도 처리 없이 무시(필요 시 확장 가능)
+
+#### ttaxi.app.myfavorite.adapter.TaxiMyCallAdapter
+##### 역할
+- 즐겨찾기 택시 경로(즐겨 찾는 호출 내역)를 RecyclerView로 표시하는 어댑터
+- 시작과 종료 지점, 별칭, 택시 종류, 옵션명 등 경로 정보를 UI에 바인딩
+- 고정(Pin) 여부, 삭제 버튼 등의 UI 상태를 제어
+- ViewHolder 내부에서 항목 클릭, 고정 변경, 삭제, 설정 다이얼로그 호출 등의 이벤트를 NotifyFavRouteItemChanged 인터페이스로 전달
+
+#### ttaxi.app.myfavorite.MyCallContract
+##### 역할
+- 내 호출(My Call) 화면의 MVP 구조에서 View와 Presenter 간 Contract 정의
+- View: 화면(UI)에서 필요한 동작과 데이터를 표시하는 메서드 정의 (토스트 메시지, 프로그레스 표시와 숨김, 빈 화면과 네트워크 오류 표시, 호출 목록 전달, 다른 화면 이동, 토큰 확인)
+- Presenter: UI 이벤트 처리 및 비즈니스 로직 수행 메서드 정의 (고정 상태 변경, 출발과 도착 지점 설정, 호출 삭제, 닉네임 변경, 정렬 및 목록 요청, 서버 데이터 조회, ONDA 등록 여부 확인)
+
+#### ttaxi.app.myfavorite.MyCallFragment
+##### 역할
+- 내 호출 목록 화면을 담당하는 Fragment로 MVP의 View 구현
+- Presenter와 연동해 생명주기(onCreate과 onResume)와 데이터 로딩 흐름 제어
+- RecyclerView 초기화 및 TaxiMyCallAdapter 연결, 정렬바 표시 제어
+- 빈 목록과 네트워크 오류와 로딩 등 상태 UI 전환
+- 스와이프 애니메이션에 따른 고정과 삭제 액션 UI 처리 및 이전 항목 상태 복구
+- 설정 시트(TaxiSettingBottomSheetDialog)로 고정, 닉네임 변경, 삭제 동작 연계
+- 항목 클릭 시 출발·도착지 지정 후 라우팅 실행(TaxiIntroActivity 또는 TaxiRouteResultActivity)
+- 액세스 토큰 체크 후 경고 다이얼로그 또는 목록 조회 트리거
+
+#### ttaxi.app.myfavorite.MyCallPresenter
+##### 역할
+- MyCallContract.Presenter를 구현하여 내 호출(My Call) 기능의 비즈니스 로직을 처리
+- 즐겨찾기 호출 목록 조회, 추가, 삭제, 수정, 정렬 등의 동작을 수행하고 결과를 View에 전달
+- OndaTaxiApi를 이용해 서버와 통신하며 호출 데이터 갱신 및 삭제 요청 처리
+- 출발지·도착지 정보를 RouteSearchDataStore에 저장하여 다음 화면(TaxiIntroActivity, TaxiRouteResultActivity 등)으로 라우팅
+- 고정(Pin) 상태 변경 시 목록 재정렬 및 최대 고정 개수 제한 로직 포함
+- 온다 서비스 가입 여부를 판단하고 토큰 체크를 통한 목록 조회 트리거
+- Presenter 생명주기 메서드에서 로그를 기록해 상태 추적
+
+#### ttaxi.app.myfavorite.TaxiMyCallActivity
+##### 역할
+- 내 호출(TaxiMyCall) 화면의 Activity로, MyCallFragment를 포함하여 호출 목록 UI를 구성
+- 툴바 설정 및 뒤로가기 네비게이션 버튼 처리
+- 오른쪽 상단 도움말 버튼 클릭 시 FavoriteRouteGuideDialogFragment 표시
+- onKeyDown과 onBackPressed를 재정의하여 뒤로가기 시 TaxiMainActivity로 이동
+- MyCallFragment를 초기화하며 OnBackPressedHandler를 통해 뒤로가기 동작을 위임 가능
